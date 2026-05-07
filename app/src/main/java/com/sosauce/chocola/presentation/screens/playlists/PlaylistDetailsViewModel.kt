@@ -58,8 +58,7 @@ class PlaylistDetailsViewModel(
                         userPreferences.getTrackSort,
                         userPreferences.sortTracksAscending
                     ) { tracks, sort, ascending ->
-                        println("loof - ${tracks.ordered(sort, ascending, query = "")}")
-                        playlist to tracks.ordered(sort, ascending, query = "")
+                        playlist to tracks.ordered(sort, ascending)
                     }
                 }
                 .flowOn(Dispatchers.Default)

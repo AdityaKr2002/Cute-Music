@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -36,13 +37,13 @@ class AlbumDetailsViewModel(
                 userPreferences.getTrackSort,
                 userPreferences.sortTracksAscending
             ) { tracks, sort, ascending ->
-                tracks.ordered(sort, ascending, "").sortedWith(
+                tracks.ordered(sort, ascending).sortedWith(
                     compareBy(
                         { it.trackNumber == 0 },
                         { it.trackNumber }
                     )
                 )
-            }.collectLatest { sortedTracks ->
+            }.flowOn(Dispatchers.Default).collectLatest { sortedTracks ->
                 _state.update {
                     it.copy(
                         tracks = sortedTracks,

@@ -51,8 +51,9 @@ class MainViewModel(
                 userPreferences.getTrackSort,
                 userPreferences.sortTracksAscending
             ) { tracks, query, trackSort, ascending ->
+
                 MainState(
-                    tracks = tracks.ordered(trackSort, ascending, query.toString()),
+                    tracks = tracks.ordered(trackSort, ascending, query),
                     isLoading = false,
                     isSearching = query.isNotEmpty()
                 )

@@ -287,7 +287,7 @@ inline fun <T> List<T>.thenIf(
 fun List<CuteTrack>.ordered(
     sort: TrackSort,
     ascending: Boolean,
-    query: String
+    query: CharSequence
 ): List<CuteTrack> {
 
     return this.fastFilter { it.title.contains(query, true) }
@@ -305,10 +305,27 @@ fun List<CuteTrack>.ordered(
         ).thenIf(!ascending) { asReversed() }
 
 }
+// Having a version with no search (album/artist details for example) is actually faster than passing an empty query
+fun List<CuteTrack>.ordered(
+    sort: TrackSort,
+    ascending: Boolean
+): List<CuteTrack> {
 
+    return this
+        .sortedWith(
+            compareBy(String.CASE_INSENSITIVE_ORDER) {
+                when (sort) {
+                    TrackSort.TITLE -> it.title
+                    TrackSort.ARTIST -> it.artist
+                    TrackSort.ALBUM -> it.album
+                    TrackSort.YEAR -> it.year.toString()
+                    TrackSort.DATE_MODIFIED -> it.dateModified.toString()
+                    TrackSort.AS_ADDED -> ""
+                }
+            }
+        ).thenIf(!ascending) { asReversed() }
 
-
-
+}
 
 fun List<Album>.ordered(
     sort: AlbumSort,
