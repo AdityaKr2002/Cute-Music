@@ -2,16 +2,23 @@ package com.sosauce.chocola.presentation.screens.metadata
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.app.PendingIntent
+import android.app.RecoverableSecurityException
+import android.content.ContentUris
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
+import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.util.copy
 import com.kyant.taglib.AudioProperties
 import com.kyant.taglib.AudioPropertiesReadStyle
 import com.kyant.taglib.Metadata
@@ -22,13 +29,17 @@ import com.sosauce.chocola.utils.toAudioFileMetadata
 import com.sosauce.chocola.utils.toModifiableMap
 import com.sosauce.chocola.utils.toPropertyMap
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.FileNotFoundException
+import java.io.FileOutputStream
 
 
 class MetadataViewModel(
@@ -40,6 +51,10 @@ class MetadataViewModel(
     val metadataState = _metadata.asStateFlow()
 
 
+    private val _legacyAskPermission = Channel<PendingIntent?>()
+    val legacyAskPermission = _legacyAskPermission.receiveAsFlow()
+
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
             loadMetadata()
@@ -48,7 +63,7 @@ class MetadataViewModel(
 
     private suspend fun loadMetadata() {
         runCatching {
-            getFileDescriptorFromPath(application, trackPath)?.use { fd ->
+            getFileDescriptorFromPath("r")?.use { fd ->
                 val metadata = loadAudioMetadata(fd)
                 val audioProperties = loadAudioProperties(fd)
                 val audioArt = loadAudioArt(fd)
@@ -98,34 +113,61 @@ class MetadataViewModel(
     }
 
 
-    private fun saveAllChanges() {
+    private fun saveChangesApi30Plus() {
         try {
-            val fd = getFileDescriptorFromPath(application, trackPath, "w")
+            (getFileDescriptorFromPath("w") ?: throw Exception("No file descriptor found!")).use { fd ->
+                fd.dup().detachFd().let {
+                    TagLib.savePropertyMap(it, metadataState.value.mutablePropertiesMap.toAudioFileMetadata().toPropertyMap())
+                }
 
-            fd?.dup()?.detachFd()?.let { fileDescriptor ->
-                TagLib.savePropertyMap(
-                    fileDescriptor,
-                    metadataState.value.mutablePropertiesMap.toAudioFileMetadata().toPropertyMap()
-                )
+                fd.dup().detachFd().let {
+                    val newPic = metadataState.value.art?.let { art -> arrayOf(art) } ?: emptyArray()
+                    TagLib.savePictures(it, newPic)
+                }
+
+                scanTrack()
             }
-
-            fd?.dup()?.detachFd()?.let {
-                val newPic = metadataState.value.art?.let {
-                    arrayOf(it)
-                } ?: emptyArray<Picture>()
-
-                TagLib.savePictures(it, newPic)
-            }
-
-            MediaScannerConnection.scanFile(
-                application.applicationContext,
-                arrayOf(trackPath),
-                null,
-                null
-            )
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+    private fun saveChangesLegacy() {
+        try {
+            val sourceFileUri = getFileUri() ?: throw FileNotFoundException()
+
+            application.contentResolver.openFileDescriptor(sourceFileUri, "rw", null)?.use { fd ->
+                fd.dup().detachFd().let {
+                    TagLib.savePropertyMap(it, metadataState.value.mutablePropertiesMap.toAudioFileMetadata().toPropertyMap())
+                }
+                fd.dup().detachFd().let {
+                    val newPic = metadataState.value.art?.let { art -> arrayOf(art) } ?: emptyArray()
+                    TagLib.savePictures(it, newPic)
+                }
+            }
+
+            scanTrack()
+
+        } catch (e: SecurityException) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val recoverableSecurityException =
+                    e as? RecoverableSecurityException ?: throw RuntimeException(
+                        e.message, e
+                    )
+
+                _legacyAskPermission.trySend(recoverableSecurityException.userAction.actionIntent)
+            } else {
+                throw RuntimeException(e.message, e)
+            }
+        }
+    }
+
+    private fun scanTrack() {
+        MediaScannerConnection.scanFile(
+            application.applicationContext,
+            arrayOf(trackPath),
+            null,
+            null
+        )
     }
 
     private fun saveNewAudioArt(uri: Uri) {
@@ -160,17 +202,13 @@ class MetadataViewModel(
     }
 
     @SuppressLint("Range")
-    private fun getFileDescriptorFromPath(
-        context: Context,
-        filePath: String,
-        mode: String = "r"
-    ): ParcelFileDescriptor? {
-        val resolver = context.contentResolver
+    private fun getFileDescriptorFromPath(mode: String = "r"): ParcelFileDescriptor? {
+        val resolver = application.contentResolver
         val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 
         val projection = arrayOf(MediaStore.Files.FileColumns._ID)
         val selection = "${MediaStore.Files.FileColumns.DATA}=?"
-        val selectionArgs = arrayOf(filePath)
+        val selectionArgs = arrayOf(trackPath)
 
         resolver.query(uri, projection, selection, selectionArgs, null)?.use { cursor ->
             if (cursor.moveToFirst()) {
@@ -191,10 +229,34 @@ class MetadataViewModel(
         return null
     }
 
+    private fun getFileUri(): Uri? {
+
+        val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+        val projection = arrayOf(MediaStore.Audio.Media._ID)
+        val selection = "${MediaStore.Audio.Media.DATA} = ?"
+        val selectionArgs = arrayOf(trackPath)
+
+        return application.contentResolver.query(uri, projection, selection, selectionArgs, null)?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                val id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID))
+                ContentUris.withAppendedId(uri, id)
+            } else null
+        }
+    }
+
+
 
     fun onHandleMetadataActions(action: MetadataActions) {
         when (action) {
-            is MetadataActions.SaveChanges -> saveAllChanges()
+            is MetadataActions.SaveChanges -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        saveChangesApi30Plus()
+                    } else {
+                        saveChangesLegacy()
+                    }
+                }
+            }
 
 
             is MetadataActions.UpdateAudioArt -> {

@@ -1,10 +1,12 @@
 package com.sosauce.chocola.presentation.screens.artist
 
+import android.provider.MediaStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sosauce.chocola.data.models.Album
 import com.sosauce.chocola.data.models.Artist
 import com.sosauce.chocola.data.models.CuteTrack
+import com.sosauce.chocola.domain.repository.AlbumsRepository
 import com.sosauce.chocola.domain.repository.ArtistsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +18,8 @@ import kotlinx.coroutines.launch
 
 class ArtistDetailsViewModel(
     private val artistName: String,
-    private val artistsRepository: ArtistsRepository
+    private val artistsRepository: ArtistsRepository,
+    private val albumsRepository: AlbumsRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(ArtistDetailsState(isLoading = true))
     val state = _state.asStateFlow()
@@ -25,7 +28,10 @@ class ArtistDetailsViewModel(
         viewModelScope.launch(Dispatchers.IO) {
 
             val artist = artistsRepository.fetchArtistDetails(artistName)
-            val albums = artistsRepository.fetchArtistAlbums(artistName)
+            val albums = albumsRepository.fetchAlbums(
+                selection = "${MediaStore.Audio.Albums.ARTIST} = ?",
+                selectionArgs = arrayOf(artistName)
+            )
             _state.update {
                 it.copy(
                     artist = artist,

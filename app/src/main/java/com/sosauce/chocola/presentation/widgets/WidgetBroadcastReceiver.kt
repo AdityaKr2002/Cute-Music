@@ -10,7 +10,6 @@ class WidgetBroadcastReceiver : BroadcastReceiver() {
     private var callback: WidgetCallback? = null
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        println("broadcast widget action: ${intent?.action}")
         val action = intent?.extras?.getString(WIDGET_ACTION_BROADCAST) ?: return
 
         when (action) {

@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Bitmap
 import android.media.audiofx.Equalizer
 import android.os.Build
 import android.os.Bundle
@@ -41,6 +42,7 @@ import com.sosauce.chocola.utils.PACKAGE
 import com.sosauce.chocola.utils.WIDGET_NEW_DATA
 import com.sosauce.chocola.utils.WIDGET_NEW_IS_PLAYING
 import com.sosauce.chocola.utils.copyMutate
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -53,6 +55,8 @@ import org.koin.core.definition.indexKey
 class PlaybackService : MediaLibraryService(), MediaLibrarySession.Callback, Player.Listener,
     WidgetCallback, KoinComponent, EqualizerCallback {
 
+
+    private val ioScope = CoroutineScope(Dispatchers.IO)
 
     private var mediaLibrarySession: MediaLibrarySession? = null
 
@@ -75,9 +79,12 @@ class PlaybackService : MediaLibraryService(), MediaLibrarySession.Callback, Pla
         super.onMediaMetadataChanged(mediaMetadata)
         val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE).apply {
             putExtra(WIDGET_NEW_DATA, WIDGET_NEW_DATA)
-            putExtra("title", mediaMetadata.title.toString())
-            putExtra("artist", mediaMetadata.artist.toString())
-            putExtra("artUri", mediaMetadata.artworkUri.toString())
+            putExtra("title", mediaMetadata.title)
+            putExtra("artist", mediaMetadata.artist)
+
+
+
+            putExtra("artUri", mediaMetadata.artworkUri)
         }
 
         sendBroadcast(intent)
@@ -164,7 +171,6 @@ class PlaybackService : MediaLibraryService(), MediaLibrarySession.Callback, Pla
             )
         }
 
-        println("am I cute ? $tempEqBands")
         userPreferences.saveEqualizerBands(tempEqBands)
     }
 
@@ -276,16 +282,13 @@ class PlaybackService : MediaLibraryService(), MediaLibrarySession.Callback, Pla
     }
 
 
+
     @UnstableApi
     override fun onTaskRemoved(rootIntent: Intent?) {
         mediaLibrarySession?.run {
             player.release()
             release()
             mediaLibrarySession = null
-        }
-        widgetReceiver.also {
-            it.stopCallback()
-            unregisterReceiver(it)
         }
         pauseAllPlayersAndStopSelf()
         super.onTaskRemoved(rootIntent)
@@ -313,10 +316,7 @@ class PlaybackService : MediaLibraryService(), MediaLibrarySession.Callback, Pla
 
     override fun setBandGain(centerFrequencyMilliHertz: Int, gainMilliBel: Short) {
 
-
         val band = equalizer?.getBand(centerFrequencyMilliHertz) ?: return
-        println("hello cutie: $centerFrequencyMilliHertz, $gainMilliBel, $band")
-
 
         equalizer?.setBandLevel(band, gainMilliBel)
 

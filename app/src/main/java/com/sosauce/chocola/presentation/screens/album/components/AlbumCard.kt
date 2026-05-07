@@ -19,9 +19,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -67,13 +69,13 @@ fun SharedTransitionScope.AlbumCard(
                 contentDescription = null,
                 modifier = Modifier.size(48.dp)
             )
+            AsyncImage(
+                model = ImageUtils.getAlbumArt(album.id),
+                contentDescription = stringResource(id = R.string.artwork),
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
         }
-        AsyncImage(
-            model = ImageUtils.getAlbumArt(album.id),
-            contentDescription = stringResource(id = R.string.artwork),
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
 
         Column(
             modifier = Modifier

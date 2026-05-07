@@ -60,6 +60,7 @@ import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.presentation.navigation.Screen
+import com.sosauce.chocola.presentation.screens.album.components.AlbumCard
 import com.sosauce.chocola.presentation.screens.album.components.NumberOfTracks
 import com.sosauce.chocola.presentation.screens.artist.components.ArtistHeader
 import com.sosauce.chocola.presentation.screens.artist.components.NumberOfAlbums
@@ -82,9 +83,7 @@ fun SharedTransitionScope.ArtistDetailsScreen(
     musicState: MusicState,
     onHandlePlayerAction: (PlayerActions) -> Unit
 ) {
-    val context = LocalContext.current
     val lazyState = rememberLazyListState()
-    val isLandscape = rememberIsLandscape()
     var sortTracksAscending by rememberSortTracksAscending()
     var trackSort by rememberTrackSort()
     val multiSelectState = rememberSweetSelectState<CuteTrack>()
@@ -165,53 +164,17 @@ fun SharedTransitionScope.ArtistDetailsScreen(
                         HorizontalMultiBrowseCarousel(
                             state = rememberCarouselState { state.albums.count() },
                             preferredItemWidth = 186.dp,
-                            itemSpacing = 8.dp,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 16.dp, bottom = 16.dp)
                         ) { index ->
                             val album = state.albums[index]
 
-                            Box(
-                                modifier = Modifier
-                                    .height(200.dp)
-                                    .sharedElement(
-                                        sharedContentState = rememberSharedContentState(key = album.id),
-                                        animatedVisibilityScope = LocalNavAnimatedContentScope.current,
-                                    )
-                                    .clip(MaterialTheme.shapes.extraLarge)
-                                    .clickable { onNavigate(Screen.AlbumsDetails(album.name)) },
-                                contentAlignment = Alignment.BottomStart
-                            ) {
-                                AsyncImage(
-                                    model = ImageUtils.getAlbumArt(album.id),
-                                    contentDescription = stringResource(R.string.artwork),
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentScale = ContentScale.Crop
-                                )
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .background(
-                                            Brush.verticalGradient(
-                                                colors = listOf(Color.Transparent, MaterialTheme.colorScheme.background)
-                                            )
-                                        )
-                                        .padding(10.dp),
-                                    verticalArrangement = Arrangement.Bottom
-                                ) {
-                                    Text(
-                                        text = album.name,
-                                        style = MaterialTheme.typography.titleMediumEmphasized,
-                                        modifier = Modifier.basicMarquee()
-                                    )
-                                    Text(
-                                        text = album.artist,
-                                        style = MaterialTheme.typography.bodyMediumEmphasized,
-                                        modifier = Modifier.basicMarquee()
-                                    )
-                                }
-                            }
+                            AlbumCard(
+                                modifier = Modifier.maskClip(MaterialTheme.shapes.extraLarge),
+                                album = album,
+                                onClick = { onNavigate(Screen.AlbumsDetails(album.name)) }
+                            )
                         }
                     }
                 }

@@ -22,7 +22,10 @@ class AlbumsRepository(
         extraSelectionArgs = arrayOf(albumName)
     )
 
-    fun fetchAlbums(): List<Album> {
+    fun fetchAlbums(
+        selection: String? = null,
+        selectionArgs: Array<String>? = null
+    ): List<Album> {
         val albums = mutableListOf<Album>()
 
         val projection = arrayOf(
@@ -34,8 +37,8 @@ class AlbumsRepository(
         context.contentResolver.query(
             MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
             projection,
-            null,
-            null,
+            selection,
+            selectionArgs,
             MediaStore.Audio.Albums.DEFAULT_SORT_ORDER,
         )?.use { cursor ->
             val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Albums._ID)
@@ -61,13 +64,6 @@ class AlbumsRepository(
         return albums.distinctBy { it.name }
     }
 
-    fun deleteAlbum(id: Long) {
-        context.contentResolver.delete(
-            MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
-            "${MediaStore.Audio.Albums._ID} = ?",
-            arrayOf(id.toString())
-        )
-    }
 
     suspend fun fetchAlbumDetails(albumName: String): Album = withContext(Dispatchers.IO) {
         context.contentResolver.query(

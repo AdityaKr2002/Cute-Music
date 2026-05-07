@@ -48,6 +48,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -72,6 +73,7 @@ import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.presentation.shared_components.ThreadDivider
 import com.sosauce.chocola.presentation.shared_components.animations.AnimatedFab
 import com.sosauce.chocola.utils.ImageUtils
+import kotlinx.coroutines.flow.collectLatest
 import sv.lib.squircleshape.CornerSmoothing
 import sv.lib.squircleshape.SquircleShape
 
@@ -103,6 +105,28 @@ fun MetadataEditor(
                 ).show()
             }
         }
+
+    val legacyPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            metadataViewModel.onHandleMetadataActions(MetadataActions.SaveChanges)
+            onNavigateUp()
+        } else {
+            Toast.makeText(context, context.getString(R.string.error_saving), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    LaunchedEffect(true) {
+        metadataViewModel.legacyAskPermission.collectLatest {
+
+            println("New event")
+            it?.let {
+                val request = IntentSenderRequest.Builder(it.intentSender).build()
+                legacyPermissionLauncher.launch(request)
+            }
+        }
+    }
 
 
     Scaffold(

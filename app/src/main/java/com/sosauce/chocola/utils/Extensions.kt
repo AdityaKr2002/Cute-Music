@@ -279,38 +279,35 @@ inline fun <E> Set<E>.copyMutate(block: MutableSet<E>.() -> Unit): Set<E> {
 }
 
 
+inline fun <T> List<T>.thenIf(
+    condition: Boolean,
+    crossinline block: List<T>.() -> List<T>
+): List<T> = if (condition) block() else this
+
 fun List<CuteTrack>.ordered(
     sort: TrackSort,
     ascending: Boolean,
     query: String
 ): List<CuteTrack> {
 
-    // Note to self: Having search first makes sorting only sort we want to display, which is more efficient
-    val searchedList = this.fastFilter { it.title.contains(query, true) }.toMutableList()
+    return this.fastFilter { it.title.contains(query, true) }
+        .sortedWith(
+            compareBy(String.CASE_INSENSITIVE_ORDER) {
+                when (sort) {
+                    TrackSort.TITLE -> it.title
+                    TrackSort.ARTIST -> it.artist
+                    TrackSort.ALBUM -> it.album
+                    TrackSort.YEAR -> it.year.toString()
+                    TrackSort.DATE_MODIFIED -> it.dateModified.toString()
+                    TrackSort.AS_ADDED -> ""
+                }
+            }
+        ).thenIf(!ascending) { asReversed() }
 
-    // In place sorting!!
-    if (ascending) {
-        when (sort) {
-            TrackSort.TITLE -> searchedList.sortBy { it.title }
-            TrackSort.ARTIST -> searchedList.sortBy { it.artist }
-            TrackSort.ALBUM -> searchedList.sortBy { it.album }
-            TrackSort.YEAR -> searchedList.sortBy { it.year }
-            TrackSort.DATE_MODIFIED -> searchedList.sortBy { it.dateModified }
-            TrackSort.AS_ADDED -> Unit
-        }
-    } else {
-        when (sort) {
-            TrackSort.TITLE -> searchedList.sortByDescending { it.title }
-            TrackSort.ARTIST -> searchedList.sortByDescending { it.artist }
-            TrackSort.ALBUM -> searchedList.sortByDescending { it.album }
-            TrackSort.YEAR -> searchedList.sortByDescending { it.year }
-            TrackSort.DATE_MODIFIED -> searchedList.sortByDescending { it.dateModified }
-            TrackSort.AS_ADDED -> searchedList.reverse()
-        }
-    }
-
-    return searchedList
 }
+
+
+
 
 
 fun List<Album>.ordered(
@@ -318,20 +315,15 @@ fun List<Album>.ordered(
     ascending: Boolean,
     query: String
 ): List<Album> {
-    val result = this.fastFilter { it.name.contains(query, true) }.toMutableList()
-
-    if (ascending) {
-        when (sort) {
-            AlbumSort.NAME -> result.sortBy { it.name }
-            AlbumSort.ARTIST -> result.sortBy { it.artist }
-        }
-    } else {
-        when (sort) {
-            AlbumSort.NAME -> result.sortByDescending { it.name }
-            AlbumSort.ARTIST -> result.sortByDescending { it.artist }
-        }
-    }
-    return result
+    return this.fastFilter { it.name.contains(query, true) }
+        .sortedWith(
+            compareBy(String.CASE_INSENSITIVE_ORDER) {
+                when (sort) {
+                    AlbumSort.NAME -> it.name
+                    AlbumSort.ARTIST -> it.artist
+                }
+            }
+        ).thenIf(!ascending) { asReversed() }
 }
 
 fun List<Artist>.ordered(
@@ -339,22 +331,16 @@ fun List<Artist>.ordered(
     ascending: Boolean,
     query: String
 ): List<Artist> {
-    val result = this.fastFilter { it.name.contains(query, true) }.toMutableList()
-
-    if (ascending) {
-        when (sort) {
-            ArtistSort.NAME -> result.sortBy { it.name }
-            ArtistSort.NB_TRACKS -> result.sortBy { it.numberTracks }
-            ArtistSort.NB_ALBUMS -> result.sortBy { it.numberAlbums }
-        }
-    } else {
-        when (sort) {
-            ArtistSort.NAME -> result.sortByDescending { it.name }
-            ArtistSort.NB_TRACKS -> result.sortByDescending { it.numberTracks }
-            ArtistSort.NB_ALBUMS -> result.sortByDescending { it.numberAlbums }
-        }
-    }
-    return result
+    return this.fastFilter { it.name.contains(query, true) }
+        .sortedWith(
+            compareBy(String.CASE_INSENSITIVE_ORDER) {
+                when (sort) {
+                    ArtistSort.NAME -> it.name
+                    ArtistSort.NB_ALBUMS -> it.numberAlbums.toString()
+                    ArtistSort.NB_TRACKS -> it.numberTracks.toString()
+                }
+            }
+        ).thenIf(!ascending) { asReversed() }
 }
 
 fun List<Playlist>.ordered(
@@ -362,24 +348,17 @@ fun List<Playlist>.ordered(
     ascending: Boolean,
     query: String
 ): List<Playlist> {
-    val result = this.fastFilter { it.name.contains(query, true) }.toMutableList()
-
-    if (ascending) {
-        when (sort) {
-            PlaylistSort.NAME -> result.sortBy { it.name }
-            PlaylistSort.NB_TRACKS -> result.sortBy { it.musics.size }
-            PlaylistSort.TAGS -> result.sortBy { it.tags.size }
-            PlaylistSort.COLOR -> result.sortBy { it.color }
-        }
-    } else {
-        when (sort) {
-            PlaylistSort.NAME -> result.sortByDescending { it.name }
-            PlaylistSort.NB_TRACKS -> result.sortByDescending { it.musics.size }
-            PlaylistSort.TAGS -> result.sortByDescending { it.tags.size }
-            PlaylistSort.COLOR -> result.sortByDescending { it.color }
-        }
-    }
-    return result
+    return this.fastFilter { it.name.contains(query, true) }
+        .sortedWith(
+            compareBy(String.CASE_INSENSITIVE_ORDER) {
+                when (sort) {
+                    PlaylistSort.NAME -> it.name
+                    PlaylistSort.NB_TRACKS -> it.musics.size.toString()
+                    PlaylistSort.TAGS -> it.tags.size.toString()
+                    PlaylistSort.COLOR -> it.color.toString()
+                }
+            }
+        ).thenIf(!ascending) { asReversed() }
 }
 
 fun <E> MutableSet<E>.addOrRemove(element: E) {

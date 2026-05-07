@@ -133,39 +133,4 @@ class ArtistsRepository(
         return 0
     }
 
-    fun fetchArtistAlbums(artistName: String): List<Album> {
-        val albums = mutableListOf<Album>()
-
-        val projection = arrayOf(
-            MediaStore.Audio.Albums._ID,
-            MediaStore.Audio.Albums.ALBUM,
-            MediaStore.Audio.Albums.ARTIST
-        )
-
-        val selection = "${MediaStore.Audio.Albums.ARTIST} = ? AND ${MediaStore.Audio.Albums.NUMBER_OF_SONGS} > ?"
-        val selectionArgs = arrayOf(artistName, "0")
-
-        context.contentResolver.query(
-            MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
-            projection,
-            selection,
-            selectionArgs,
-            MediaStore.Audio.Albums.DEFAULT_SORT_ORDER,
-        )?.use { cursor ->
-            val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Albums._ID)
-            val albumColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Albums.ALBUM)
-            val artistColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Albums.ARTIST)
-
-            while (cursor.moveToNext()) {
-                val id = cursor.getLong(idColumn)
-                val album = cursor.getString(albumColumn)
-                val artist = cursor.getString(artistColumn)
-                val albumInfo = Album(id, album, artist)
-                albums.add(albumInfo)
-            }
-        }
-
-        return albums.distinctBy { it.name }
-    }
-
 }

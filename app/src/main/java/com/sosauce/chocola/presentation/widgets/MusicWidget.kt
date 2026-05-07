@@ -3,7 +3,11 @@ package com.sosauce.chocola.presentation.widgets
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.util.Base64
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.decodeToImageBitmap
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -46,6 +50,7 @@ import com.sosauce.chocola.utils.WIDGET_NEW_IS_PLAYING
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okio.ByteString.Companion.toByteString
 
 
 val CURRENTLY_PLAYING_WIDGET = stringPreferencesKey("CURRENTLY_PLAYING_WIDGET")
@@ -62,96 +67,101 @@ object MusicWidget : GlanceAppWidget() {
 
             val currentlyPlaying = currentState(CURRENTLY_PLAYING_WIDGET)
             val currentArtist = currentState(CURRENT_ARTIST_WIDGET)
-            val currentArtUri = currentState(CURRENT_ART_URI_WIDGET)
+            val artBytes = currentState(CURRENT_ART_URI_WIDGET)
             val isCurrentlyPlaying = currentState(IS_CURRENTLY_PLAYING_WIDGET) == true
 
-
-
-            Row(
-                modifier = GlanceModifier
-                    .fillMaxSize()
-                    .background(GlanceTheme.colors.background)
-                    .clickable(actionStartActivity<MainActivity>())
-            ) {
-                Image(
-                    provider = ImageProvider(currentArtUri?.toUri() ?: Uri.EMPTY),
-                    contentDescription = null,
+            GlanceTheme {
+                Row(
                     modifier = GlanceModifier
-                        .wrapContentWidth()
-                        .fillMaxHeight()
-                        .cornerRadius(5.dp), // Only A12 +, sad
-                    contentScale = ContentScale.Fit
-                )
-                Spacer(GlanceModifier.width(10.dp))
-                Column(
-                    modifier = GlanceModifier.fillMaxSize()
+                        .fillMaxSize()
+                        .background(GlanceTheme.colors.background)
+                        .clickable(actionStartActivity<MainActivity>())
                 ) {
-                    Spacer(GlanceModifier.height(5.dp))
-                    GlanceText(
-                        text = currentlyPlaying ?: "No title"
+
+                    val imageProvider = if (artBytes.isNullOrEmpty()) {
+                        ImageProvider(R.drawable.music_note_rounded)
+                    } else ImageProvider(Base64.decode(artBytes, Base64.DEFAULT).decodeToImageBitmap().asAndroidBitmap())
+
+
+
+                    Image(
+                        provider = imageProvider,
+                        contentDescription = null,
+                        modifier = GlanceModifier
+                            .wrapContentWidth()
+                            .fillMaxHeight(),
+                        contentScale = ContentScale.Fit
                     )
-                    GlanceText(
-                        text = currentArtist ?: "No artist",
-                        color = ColorProvider(
-                            GlanceTheme.colors.onBackground.getColor(context).copy(0.85f)
-                        )
-                    )
-                    Row(
-                        modifier = GlanceModifier.fillMaxSize(),
-                        verticalAlignment = Alignment.Bottom,
-                        horizontalAlignment = Alignment.CenterHorizontally
+                    Spacer(GlanceModifier.width(10.dp))
+                    Column(
+                        modifier = GlanceModifier.fillMaxSize()
                     ) {
-                        CircleIconButton(
-                            imageProvider = ImageProvider(R.drawable.widget_previous),
-                            contentDescription = null,
-                            onClick = {
-                                createWidgetPendingIntent(
-                                    context,
-                                    WIDGET_ACTION_SKIP_PREVIOUS
-                                ).send()
-                            },
-                            modifier = GlanceModifier.size(45.dp)
+                        Spacer(GlanceModifier.height(5.dp))
+                        GlanceText(
+                            text = currentlyPlaying ?: "Nothing playing"
                         )
-                        if (isCurrentlyPlaying) {
+                        GlanceText(
+                            text = currentArtist ?: "No artist",
+                            color = GlanceTheme.colors.onSurfaceVariant
+                        )
+                        Row(
+                            modifier = GlanceModifier.fillMaxSize(),
+                            verticalAlignment = Alignment.Bottom,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
                             CircleIconButton(
-                                imageProvider = ImageProvider(R.drawable.widget_pause),
+                                imageProvider = ImageProvider(R.drawable.widget_previous),
                                 contentDescription = null,
                                 onClick = {
                                     createWidgetPendingIntent(
                                         context,
-                                        WIDGET_ACTION_PLAYORPAUSE
+                                        WIDGET_ACTION_SKIP_PREVIOUS
                                     ).send()
                                 },
                                 modifier = GlanceModifier.size(45.dp)
                             )
-                        } else {
+                            if (isCurrentlyPlaying) {
+                                CircleIconButton(
+                                    imageProvider = ImageProvider(R.drawable.widget_pause),
+                                    contentDescription = null,
+                                    onClick = {
+                                        createWidgetPendingIntent(
+                                            context,
+                                            WIDGET_ACTION_PLAYORPAUSE
+                                        ).send()
+                                    },
+                                    modifier = GlanceModifier.size(45.dp)
+                                )
+                            } else {
+                                CircleIconButton(
+                                    imageProvider = ImageProvider(R.drawable.widget_play),
+                                    contentDescription = null,
+                                    onClick = {
+                                        createWidgetPendingIntent(
+                                            context,
+                                            WIDGET_ACTION_PLAYORPAUSE
+                                        ).send()
+                                    },
+                                    modifier = GlanceModifier.size(45.dp)
+                                )
+                            }
                             CircleIconButton(
-                                imageProvider = ImageProvider(R.drawable.widget_play),
+                                imageProvider = ImageProvider(R.drawable.widget_next),
                                 contentDescription = null,
                                 onClick = {
                                     createWidgetPendingIntent(
                                         context,
-                                        WIDGET_ACTION_PLAYORPAUSE
+                                        WIDGET_ACTION_SKIP_NEXT
                                     ).send()
                                 },
                                 modifier = GlanceModifier.size(45.dp)
                             )
                         }
-                        CircleIconButton(
-                            imageProvider = ImageProvider(R.drawable.widget_next),
-                            contentDescription = null,
-                            onClick = {
-                                createWidgetPendingIntent(
-                                    context,
-                                    WIDGET_ACTION_SKIP_NEXT
-                                ).send()
-                            },
-                            modifier = GlanceModifier.size(45.dp)
-                        )
                     }
-                }
 
+                }
             }
+
 
         }
     }
@@ -194,7 +204,20 @@ class MusicWidgetReceiver : GlanceAppWidgetReceiver() {
                                 intent.getStringExtra("title") ?: "<unknown>"
                             prefs[CURRENT_ARTIST_WIDGET] =
                                 intent.getStringExtra("artist") ?: "<unknown>"
-                            prefs[CURRENT_ART_URI_WIDGET] = intent.getStringExtra("artUri") ?: ""
+
+
+                            val artUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                intent.getParcelableExtra("artUri", Uri::class.java)
+                            } else {
+                                intent.getParcelableExtra("artUri")
+                            } ?: Uri.EMPTY
+
+                            println("CACA: $artUri")
+
+                            val bytes = context.contentResolver.openInputStream(artUri)?.use { it.readBytes() } ?: byteArrayOf()
+                            println("CACA: ${bytes.contentToString()}")
+
+                            prefs[CURRENT_ART_URI_WIDGET] = Base64.encodeToString(bytes, Base64.DEFAULT)
                         }
                     }
                     glanceAppWidget.update(context, glanceId)

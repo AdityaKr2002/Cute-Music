@@ -317,6 +317,7 @@ class MusicViewModel(
                         )
                     }
                     mediaController!!.setMediaItems(mediaItemsToPlay)
+                    println("meowmeow")
                 }
                 if (action.random) {
                     mediaController!!.playRandom()
@@ -389,29 +390,24 @@ class MusicViewModel(
                 val index = musicState.value.loadedMedias.indexOf(action.track)
                 mediaController!!.removeMediaItem(index)
 
-                val loadedMedias = musicState.value.loadedMedias.copyMutate {
-                    remove(action.track)
-                }
                 _musicState.update {
                     it.copy(
-                        loadedMedias = loadedMedias
+                        loadedMedias = it.loadedMedias - action.track
                     )
                 }
             }
-
             is PlayerActions.AddToQueue -> {
+                val newUniqueTracks = action.cuteTracks.fastFilter { it !in musicState.value.loadedMedias }
 
+                if (newUniqueTracks.isNotEmpty()) {
+                    _musicState.update {
+                        it.copy(
+                            loadedMedias = it.loadedMedias + newUniqueTracks
+                        )
+                    }
 
-                val uniqueTracks = action.cuteTracks.fastFilter { it !in musicState.value.loadedMedias }
-                val mediaItems = uniqueTracks.fastMap { MediaItem.fromUri(it.uri) }
-                mediaController!!.addMediaItems(mediaItems)
-
-                val loadedMedias = musicState.value.loadedMedias.copyMutate {
-                    addAll(uniqueTracks)
-                }
-                _musicState.update {
-                    it.copy(
-                        loadedMedias = loadedMedias
+                    mediaController?.addMediaItems(
+                        newUniqueTracks.fastMap { it.mediaItem }
                     )
                 }
             }

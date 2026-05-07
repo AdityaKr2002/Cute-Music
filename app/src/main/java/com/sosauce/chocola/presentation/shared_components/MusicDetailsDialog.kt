@@ -317,7 +317,11 @@ private fun TrackDetails(
                 )
             }
             Spacer(Modifier.height(10.dp))
-            Text(details.data)
+            Text(
+                text = details.data,
+                maxLines = 1,
+                modifier = Modifier.basicMarquee()
+            )
         }
     }
 }

@@ -7,6 +7,7 @@ import android.content.Context
 import android.provider.MediaStore
 import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.utils.observe
@@ -174,7 +175,15 @@ class AbstractTracksScanner(
                         path = filePath,
                         isSaf = false,
                         dateModified = dateModified,
-                        mediaItem = MediaItem.Builder().setUri(uri).setMediaId(mediaId).build()
+                        mediaItem = MediaItem.Builder()
+                            .setUri(uri)
+                            .setMediaId(mediaId)
+                            .setMediaMetadata(
+                                MediaMetadata.Builder()
+                                    .setArtworkUri(artUri) // required for widgets
+                                    .build()
+                            )
+                            .build()
                     )
                 )
             }

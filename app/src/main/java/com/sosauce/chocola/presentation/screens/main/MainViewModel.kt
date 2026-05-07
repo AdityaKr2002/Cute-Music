@@ -8,12 +8,15 @@ import android.net.Uri
 import android.os.Environment
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.util.fastFilter
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sosauce.chocola.data.AbstractTracksScanner
 import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.models.CuteTrack
+import com.sosauce.chocola.utils.TrackSort
+import com.sosauce.chocola.utils.copyMutate
 import com.sosauce.chocola.utils.ordered
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -25,6 +28,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.system.measureTimeMillis
 
 class MainViewModel(
     private val application: Application,
@@ -47,12 +51,10 @@ class MainViewModel(
                 userPreferences.getTrackSort,
                 userPreferences.sortTracksAscending
             ) { tracks, query, trackSort, ascending ->
-                val newTracks = tracks.ordered(trackSort, ascending, query.toString())
                 MainState(
-                    tracks = newTracks,
+                    tracks = tracks.ordered(trackSort, ascending, query.toString()),
                     isLoading = false,
-                    isSearching = query.isNotEmpty(),
-                    textFieldState = textFieldState
+                    isSearching = query.isNotEmpty()
                 )
             }
                 .flowOn(Dispatchers.Default)
