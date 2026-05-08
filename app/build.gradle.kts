@@ -25,8 +25,8 @@ android {
         applicationId = "com.sosauce.cutemusic"
         minSdk = 26
         targetSdk = 37
-        versionCode = 50001
-        versionName = "4.1.0"
+        versionCode = 50002
+        versionName = "4.2.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -122,8 +122,8 @@ dependencies {
     implementation(libs.reorderable)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
-    implementation("dev.chrisbanes.haze:haze:1.7.2")
-    implementation("dev.chrisbanes.haze:haze-materials:1.7.2")
+    implementation(libs.haze)
+    implementation(libs.haze.materials)
     implementation(libs.androidx.compose.animation.graphics.android)
     implementation(libs.lyrics.core)
     implementation(libs.androidx.compose.foundation)
