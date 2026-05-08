@@ -88,8 +88,8 @@ fun NowPlayingLandscape(
         ) {
             Column {
                 Artwork(
-                    pagerModifier = Modifier
-                        .fillMaxWidth(0.4f),
+//                    pagerModifier = Modifier
+//                        .fillMaxWidth(0.4f),
                     musicState = musicState,
                     onHandlePlayerActions = onHandlePlayerActions
                 )

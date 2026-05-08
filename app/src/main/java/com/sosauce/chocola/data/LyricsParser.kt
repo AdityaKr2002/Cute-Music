@@ -12,7 +12,7 @@ import androidx.compose.ui.util.fastMap
 import com.kyant.taglib.TagLib
 import com.mocharealm.accompanist.lyrics.core.model.synced.SyncedLine
 import com.mocharealm.accompanist.lyrics.core.parser.AutoParser
-import com.mocharealm.accompanist.lyrics.core.parser.LrcParser
+import com.mocharealm.accompanist.lyrics.core.parser.EnhancedLrcParser
 import com.sosauce.chocola.domain.model.Lyrics
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -27,15 +27,14 @@ class LyricsParser(private val context: Context) {
 
         return@withContext if (uri != null) {
             context.contentResolver.openInputStream(uri)?.bufferedReader()?.useLines { lines ->
-                val lyrics = LrcParser.parse(lines.toList())
+                val lyrics = EnhancedLrcParser.parse(lines.toList())
                 lyrics.lines.fastMap { line -> (line as SyncedLine).toLyricLine() }
             } ?: emptyList()
         } else {
 
-            val autoParser = AutoParser.Builder().build()
+            val autoParser = AutoParser()
             val embeddedLyrics = loadEmbeddedLyrics(path) ?: return@withContext emptyList()
 
-            println("KITTY KAT: $embeddedLyrics")
 
             // Tries to load synced embedded lyrics, if embedded lyrics are unsynced, just return raw embedded lyrics
             autoParser.parse(embeddedLyrics)

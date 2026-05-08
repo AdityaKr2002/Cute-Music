@@ -77,125 +77,98 @@ fun ActionButtonsRow(
 
 
     ButtonGroup(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-        overflowIndicator = {}
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        customItem(
-            {
-                FilledIconButton(
-                    onClick = { onHandlePlayerActions(PlayerActions.SeekToPreviousMusic) },
-                    shapes = IconButtonDefaults.shapes(),
-                    colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary,
-                        contentColor = contentColorFor(MaterialTheme.colorScheme.tertiary)
-                    ),
-                    interactionSource = interactionSources[0],
-                    modifier = Modifier
-                        .weight(1f)
-                        .size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
-                        .animateWidth(interactionSource = interactionSources[0])
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.skip_previous),
-                        contentDescription = stringResource(androidx.media3.session.R.string.media3_controls_seek_forward_description)
-                    )
-                }
-            },
-            {}
-        )
-        customItem(
-            {
-                IconButton(
-                    onClick = { onHandlePlayerActions(PlayerActions.RewindTo(seekDurationInSeconds)) },
-                    shapes = IconButtonDefaults.shapes(),
-                    colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                        contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
-                    ),
-                    interactionSource = interactionSources[1],
-                    modifier = Modifier
-                        .weight(1f)
-                        .size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
-                        .animateWidth(interactionSource = interactionSources[1])
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.fast_rewind),
-                        contentDescription = stringResource(androidx.media3.session.R.string.media3_controls_seek_forward_description)
-                    )
-                }
-            },
-            {}
-        )
-        customItem(
-            {
-                FilledIconButton(
-                    onClick = { onHandlePlayerActions(PlayerActions.PlayOrPause) },
-                    shapes = IconButtonDefaults.shapes(),
-                    colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = contentColorFor(MaterialTheme.colorScheme.primary)
-                    ),
-                    interactionSource = interactionSources[2],
-                    modifier = Modifier
-                        .weight(1.5f)
-                        .size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
-                        .animateWidth(interactionSource = interactionSources[2])
-                ) {
-                    AnimatedPlayPauseIcon(
-                        isPlaying = musicState.isPlaying
-                    )
-                }
-            },
-            {}
-        )
-        customItem(
-            {
-                IconButton(
-                    onClick = { onHandlePlayerActions(PlayerActions.SeekTo(seekDurationInSeconds)) },
-                    shapes = IconButtonDefaults.shapes(),
-                    colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                        contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
-                    ),
-                    interactionSource = interactionSources[3],
-                    modifier = Modifier
-                        .weight(1f)
-                        .size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
-                        .animateWidth(interactionSource = interactionSources[3])
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.fast_forward),
-                        contentDescription = stringResource(androidx.media3.session.R.string.media3_controls_seek_forward_description)
-                    )
-                }
-            },
-            {}
-        )
-        customItem(
-            {
-                FilledIconButton(
-                    onClick = { onHandlePlayerActions(PlayerActions.SeekToNextMusic) },
-                    shapes = IconButtonDefaults.shapes(),
-                    colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary,
-                        contentColor = contentColorFor(MaterialTheme.colorScheme.tertiary)
-                    ),
-                    interactionSource = interactionSources[4],
-                    modifier = Modifier
-                        .weight(1f)
-                        .size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
-                        .animateWidth(interactionSource = interactionSources[4])
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.skip_next),
-                        contentDescription = stringResource(androidx.media3.session.R.string.media3_controls_seek_forward_description)
-                    )
-                }
-            },
-            {}
-        )
+        FilledIconButton(
+            onClick = { onHandlePlayerActions(PlayerActions.SeekToPreviousMusic) },
+            shapes = IconButtonDefaults.shapes(),
+            colors = IconButtonDefaults.iconButtonColors(
+                containerColor = MaterialTheme.colorScheme.tertiary,
+                contentColor = contentColorFor(MaterialTheme.colorScheme.tertiary)
+            ),
+            interactionSource = interactionSources[0],
+            modifier = Modifier
+                .weight(1f)
+                .size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
+                .animateWidth(interactionSource = interactionSources[0])
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.skip_previous),
+                contentDescription = stringResource(androidx.media3.session.R.string.media3_controls_seek_forward_description)
+            )
+        }
+        IconButton(
+            onClick = { onHandlePlayerActions(PlayerActions.RewindTo(seekDurationInSeconds)) },
+            shapes = IconButtonDefaults.shapes(),
+            colors = IconButtonDefaults.filledIconButtonColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
+            ),
+            interactionSource = interactionSources[1],
+            modifier = Modifier
+                .weight(1f)
+                .size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
+                .animateWidth(interactionSource = interactionSources[1])
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.fast_rewind),
+                contentDescription = stringResource(androidx.media3.session.R.string.media3_controls_seek_forward_description)
+            )
+        }
+        FilledIconButton(
+            onClick = { onHandlePlayerActions(PlayerActions.PlayOrPause) },
+            shapes = IconButtonDefaults.shapes(),
+            colors = IconButtonDefaults.iconButtonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = contentColorFor(MaterialTheme.colorScheme.primary)
+            ),
+            interactionSource = interactionSources[2],
+            modifier = Modifier
+                .weight(1.5f)
+                .size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
+                .animateWidth(interactionSource = interactionSources[2])
+        ) {
+            AnimatedPlayPauseIcon(
+                isPlaying = musicState.isPlaying
+            )
+        }
+        IconButton(
+            onClick = { onHandlePlayerActions(PlayerActions.SeekTo(seekDurationInSeconds)) },
+            shapes = IconButtonDefaults.shapes(),
+            colors = IconButtonDefaults.filledIconButtonColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
+            ),
+            interactionSource = interactionSources[3],
+            modifier = Modifier
+                .weight(1f)
+                .size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
+                .animateWidth(interactionSource = interactionSources[3])
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.fast_forward),
+                contentDescription = stringResource(androidx.media3.session.R.string.media3_controls_seek_forward_description)
+            )
+        }
+        FilledIconButton(
+            onClick = { onHandlePlayerActions(PlayerActions.SeekToNextMusic) },
+            shapes = IconButtonDefaults.shapes(),
+            colors = IconButtonDefaults.iconButtonColors(
+                containerColor = MaterialTheme.colorScheme.tertiary,
+                contentColor = contentColorFor(MaterialTheme.colorScheme.tertiary)
+            ),
+            interactionSource = interactionSources[4],
+            modifier = Modifier
+                .weight(1f)
+                .size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
+                .animateWidth(interactionSource = interactionSources[4])
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.skip_next),
+                contentDescription = stringResource(androidx.media3.session.R.string.media3_controls_seek_forward_description)
+            )
+        }
 
     }
 }

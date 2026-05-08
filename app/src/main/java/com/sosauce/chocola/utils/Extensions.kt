@@ -97,18 +97,6 @@ fun Modifier.selfAlignHorizontally(align: Alignment.Horizontal = Alignment.Cente
     )
 }
 
-
-
-val MediaItem.path
-    get() = mediaMetadata.extras?.getString("path") ?: ""
-
-val MediaItem.uri: Uri
-    get() = mediaMetadata.extras?.getString("uri")?.toUri() ?: Uri.EMPTY
-
-val MediaItem.albumId
-    get() = mediaMetadata.extras?.getLong("album_id") ?: 0
-
-
 fun Player.playRandom() {
 
     if (mediaItemCount == 0) return
@@ -218,20 +206,6 @@ fun PropertyMap.toModifiableMap(separator: String = ", "): MutableMap<String, St
 fun String?.formatForField(separator: String = ","): Array<String> {
     return this?.split(separator)?.map { it.trim() }?.toTypedArray() ?: arrayOf(this ?: "")
 }
-
-fun Modifier.ignoreParentPadding(): Modifier =
-    layout { measurable, constraints ->
-        val placeable = measurable.measure(
-            constraints.offset(
-                15.dp.roundToPx()
-            )
-        )
-        layout(
-            placeable.width,
-            placeable.height
-        ) { placeable.place(0, 0) }
-    }
-
 @Stable
 data class AudioFileMetadata(
     val title: String?,

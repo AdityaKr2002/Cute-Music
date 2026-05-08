@@ -1,25 +1,30 @@
+import com.android.build.api.variant.VariantOutputConfiguration
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.androidApplication)
-    alias(libs.plugins.kotlin)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.serialization)
     alias(libs.plugins.ksp)
 }
 
+androidComponents {
+    onVariants(selector().withBuildType("release")) { variant ->
+        val mainOutput = variant.outputs.single { it.outputType == VariantOutputConfiguration.OutputType.SINGLE }
 
+        @Suppress("UnstableApiUsage")
+        mainOutput.outputFileName = "Chocola_${mainOutput.versionName.get()}.apk"
+    }
+}
 
 android {
     namespace = "com.sosauce.chocola"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
-
-
-        applicationId = "com.sosauce.cutemusic" // Do not change to chocola, will require people who installed it as CuteMusic to re-install the app, and we'd have to create a new F-droid app page etc...
+        applicationId = "com.sosauce.cutemusic"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 50001
         versionName = "4.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -31,17 +36,6 @@ android {
             abiFilters += arrayOf("arm64-v8a", "armeabi-v7a")
         }
     }
-
-    applicationVariants.all {
-        val variant = this
-        variant.outputs
-            .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
-            .forEach { output ->
-                output.outputFileName = "Chocola_${variant.versionName}.apk"
-            }
-    }
-
-
 
     signingConfigs {
         create("release") {
@@ -94,61 +88,48 @@ android {
             includeInApk = false
             includeInBundle = false
         }
-
-
-//        splits {
-//            abi {
-//                isEnable = true
-//                reset()
-//                include("armeabi-v7a", "arm64-v8a")
-//                isUniversalApk = true
-//            }
-//        }
-
-
-    }
-
-    dependencies {
-        implementation(platform(libs.androidx.compose.bom))
-        implementation(libs.androidx.core.ktx)
-        implementation(libs.androidx.activity.compose)
-        implementation(libs.androidx.material3)
-        implementation(libs.androidx.ui)
-        implementation(libs.androidx.lifecycle.runtime.compose)
-        implementation(libs.androidx.core.splashscreen)
-        implementation(libs.androidx.datastore.preferences)
-        implementation(libs.coil.compose)
-        implementation(libs.androidx.media3.common)
-        implementation(libs.androidx.media3.exoplayer)
-        implementation(libs.androidx.media3.session)
-        implementation(libs.androidx.compose.animation)
-        implementation(libs.kotlinx.serialization.json)
-        implementation(libs.koin.android)
-        implementation(libs.koin.androidx.compose)
-        implementation(libs.material.kolor)
-        implementation(libs.koin.androidx.startup)
-        implementation(libs.taglib)
-        debugImplementation(libs.androidx.ui.tooling)
-        implementation(libs.androidx.room.ktx)
-        implementation(libs.androidx.emoji2.emojipicker)
-        implementation(libs.kmpalette.core)
-        implementation(libs.androidx.glance)
-        implementation(libs.androidx.glance.appwidget)
-        implementation(libs.androidx.navigation3.runtime)
-        implementation(libs.androidx.navigation3.ui)
-        implementation(libs.reorderable)
-        ksp(libs.androidx.room.compiler)
-        implementation(libs.androidx.lifecycle.viewmodel.navigation3)
-        implementation("dev.chrisbanes.haze:haze:1.7.2")
-        implementation("dev.chrisbanes.haze:haze-materials:1.7.2")
-        implementation(libs.androidx.compose.animation.graphics.android)
-        implementation(libs.lyrics.core)
-        implementation(libs.androidx.compose.foundation)
-        implementation(libs.colorpicker.compose)
-        implementation(libs.sweetselect.compose)
-        implementation(libs.squircle.shape)
-        implementation(libs.cloudy)
-
-
     }
 }
+
+dependencies {
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.coil.compose)
+    implementation(libs.androidx.media3.common)
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.session)
+    implementation(libs.androidx.compose.animation)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+    implementation(libs.material.kolor)
+    implementation(libs.koin.androidx.startup)
+    implementation(libs.taglib)
+    debugImplementation(libs.androidx.ui.tooling)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.emoji2.emojipicker)
+    implementation(libs.kmpalette.core)
+    implementation(libs.androidx.glance)
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.reorderable)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation("dev.chrisbanes.haze:haze:1.7.2")
+    implementation("dev.chrisbanes.haze:haze-materials:1.7.2")
+    implementation(libs.androidx.compose.animation.graphics.android)
+    implementation(libs.lyrics.core)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.colorpicker.compose)
+    implementation(libs.sweetselect.compose)
+    implementation(libs.squircle.shape)
+    implementation(libs.cloudy)
+}
+

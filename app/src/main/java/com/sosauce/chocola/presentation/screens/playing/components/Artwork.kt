@@ -11,6 +11,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -50,12 +51,12 @@ import coil3.compose.rememberAsyncImagePainter
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberArtworkShape
 import com.sosauce.chocola.data.datastore.rememberCarousel
+import com.sosauce.chocola.data.datastore.rememberIsLandscape
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.presentation.shared_components.animations.MorphPolygonShape
 import com.sosauce.chocola.utils.ArtworkShape
 import com.sosauce.chocola.utils.bouncySpec
-import com.sosauce.chocola.utils.ignoreParentPadding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -65,12 +66,12 @@ import kotlin.math.absoluteValue
 
 @Composable
 fun Artwork(
-    pagerModifier: Modifier = Modifier,
     musicState: MusicState,
     onHandlePlayerActions: (PlayerActions) -> Unit,
 ) {
     val useCarousel by rememberCarousel()
     var artworkShape by rememberArtworkShape()
+    val isLandscape = rememberIsLandscape()
 
     if (useCarousel) {
         val carouselState =
@@ -89,7 +90,7 @@ fun Artwork(
             }
         }
 
-        // Use rememberUpdatedState to always read latest values inside the long-lived LaunchedEffect
+        // Use rememberUpdatedState to always read the latest values inside the long-lived LaunchedEffect
         val currentMediaIndex by rememberUpdatedState(musicState.mediaIndex)
         val currentShuffle by rememberUpdatedState(musicState.shuffle)
         val currentTrackCount by rememberUpdatedState(musicState.loadedMedias.size)
@@ -122,7 +123,7 @@ fun Artwork(
             state = carouselState,
             itemSpacing = 5.dp,
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(if (isLandscape) 0.4f else 1f)
                 .aspectRatio(1f)
         ) { page ->
             Box(
@@ -153,10 +154,8 @@ fun Artwork(
 
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .clip(
-                    shape = ArtworkShape.toShape(artworkShape)
-                )
+                .fillMaxWidth(if (isLandscape) 0.4f else 1f)
+                .clip(ArtworkShape.toShape(artworkShape))
                 .aspectRatio(1f)
                 .background(MaterialTheme.colorScheme.surfaceContainer),
             contentAlignment = Alignment.Center
