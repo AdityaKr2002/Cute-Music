@@ -6,6 +6,7 @@
 package com.sosauce.chocola.presentation.screens.playing.components
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -17,10 +18,12 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.carousel.HorizontalCenteredHeroCarousel
 import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.material3.contentColorFor
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,11 +36,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.graphics.shapes.CornerRounding
+import androidx.graphics.shapes.Morph
+import androidx.graphics.shapes.RoundedPolygon
+import androidx.graphics.shapes.rectangle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.sosauce.chocola.R
@@ -45,14 +52,16 @@ import com.sosauce.chocola.data.datastore.rememberArtworkShape
 import com.sosauce.chocola.data.datastore.rememberCarousel
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
+import com.sosauce.chocola.presentation.shared_components.animations.MorphPolygonShape
 import com.sosauce.chocola.utils.ArtworkShape
-import com.sosauce.chocola.utils.ImageUtils
+import com.sosauce.chocola.utils.bouncySpec
 import com.sosauce.chocola.utils.ignoreParentPadding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import kotlin.math.absoluteValue
 
 @Composable
 fun Artwork(
@@ -111,76 +120,61 @@ fun Artwork(
 
         HorizontalCenteredHeroCarousel(
             state = carouselState,
-            modifier = pagerModifier
-                .ignoreParentPadding()
+            itemSpacing = 5.dp,
+            modifier = Modifier
+                .fillMaxWidth()
                 .aspectRatio(1f)
-                .wrapContentSize()
-                .fillMaxSize(),
-            itemSpacing = 10.dp
         ) { page ->
-            val image = rememberAsyncImagePainter(musicState.loadedMedias[page].artUri)
-            val imageState by image.state.collectAsStateWithLifecycle()
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .maskClip(MaterialTheme.shapes.extraLarge)
+                    .aspectRatio(1f)
+                    .background(MaterialTheme.colorScheme.surfaceContainer),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.music_note_rounded),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(0.4f),
+                    tint = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
 
-            when (imageState) {
-                is AsyncImagePainter.State.Error -> ErrorImage()
-                else -> {
-                    Image(
-                        painter = image,
-                        contentDescription = stringResource(R.string.artwork),
-                        modifier = Modifier
-                            .aspectRatio(1f)
-                            .wrapContentSize()
-                            .fillMaxSize()
-                            .maskClip(MaterialTheme.shapes.extraLarge),
-                        contentScale = ContentScale.Crop
-                    )
-                }
+                )
+                AsyncImage(
+                    model = musicState.loadedMedias[page].artUri,
+                    contentDescription = stringResource(R.string.artwork),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
             }
         }
 
     } else {
 
-        val image =
-            rememberAsyncImagePainter(musicState.track.artUri)
-        val imageState by image.state.collectAsStateWithLifecycle()
-
-        when (imageState) {
-            is AsyncImagePainter.State.Error -> ErrorImage()
-            else -> {
-                Image(
-                    painter = image,
-                    contentDescription = stringResource(R.string.artwork),
-                    modifier = Modifier
-                        .aspectRatio(1f)
-                        .clip(ArtworkShape.toShape(artworkShape)),
-                    contentScale = ContentScale.Crop
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(
+                    shape = ArtworkShape.toShape(artworkShape)
                 )
-            }
+                .aspectRatio(1f)
+                .background(MaterialTheme.colorScheme.surfaceContainer),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.music_note_rounded),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(0.4f),
+                tint = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
+
+            )
+            AsyncImage(
+                model = musicState.track.artUri,
+                contentDescription = stringResource(R.string.artwork),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
         }
-    }
-}
-
-@Composable
-private fun ErrorImage() {
-
-    var artworkShape by rememberArtworkShape()
-
-    Box(
-        modifier = Modifier
-            .aspectRatio(1f)
-            .background(
-                color = MaterialTheme.colorScheme.surfaceContainer,
-                shape = ArtworkShape.toShape(artworkShape)
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            painter = painterResource(R.drawable.music_note_rounded),
-            contentDescription = null,
-            modifier = Modifier.size(110.dp),
-            tint = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
-
-        )
     }
 }
 

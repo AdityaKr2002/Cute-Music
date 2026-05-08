@@ -92,7 +92,8 @@ class ArtistsRepository(
                 cursor.getColumnIndexOrThrow(MediaStore.Audio.Artists.NUMBER_OF_ALBUMS)
             val nbTracksColumn =
                 cursor.getColumnIndexOrThrow(MediaStore.Audio.Artists.NUMBER_OF_TRACKS)
-            while (cursor.moveToFirst()) {
+
+            if (cursor.moveToFirst()) {
                 val id = cursor.getLong(idColumn)
                 val name = cursor.getString(nameColumn)
                 val nbAlbums = cursor.getInt(nbAlbumsColumn)
