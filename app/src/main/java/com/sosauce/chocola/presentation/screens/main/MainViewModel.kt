@@ -51,15 +51,18 @@ class MainViewModel(
                 userPreferences.getTrackSort,
                 userPreferences.sortTracksAscending
             ) { tracks, query, trackSort, ascending ->
-
-                MainState(
-                    tracks = tracks.ordered(trackSort, ascending, query),
-                    isLoading = false,
-                    isSearching = query.isNotEmpty()
-                )
+                tracks.ordered(trackSort, ascending, query) to query.isNotEmpty()
             }
                 .flowOn(Dispatchers.Default)
-                .collectLatest { state -> _state.update { state } }
+                .collectLatest { (tracks, isSearching) ->
+                    _state.update {
+                        it.copy(
+                            tracks = tracks,
+                            isLoading = false,
+                            isSearching = isSearching
+                        )
+                    }
+                }
         }
     }
 
