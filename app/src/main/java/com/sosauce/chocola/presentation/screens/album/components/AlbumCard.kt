@@ -53,30 +53,24 @@ fun SharedTransitionScope.AlbumCard(
 
     Box(
         modifier = modifier
-            .padding(horizontal = 5.dp, vertical = 13.dp)
+            .padding(horizontal = 5.dp, vertical = 10.dp)
             .aspectRatio(1f)
-            .clip(SquircleShape(percent = 30, smoothing = CornerSmoothing.Full))
-            .clickable(onClick = onClick)
+            .clip(MaterialTheme.shapes.extraLarge)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surfaceContainer),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.album_filled),
-                contentDescription = null,
-                modifier = Modifier.size(48.dp)
-            )
-            AsyncImage(
-                model = ImageUtils.getAlbumArt(album.id),
-                contentDescription = stringResource(id = R.string.artwork),
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
-        }
-
+        Icon(
+            painter = painterResource(R.drawable.album_filled),
+            contentDescription = null,
+            modifier = Modifier.size(48.dp)
+        )
+        AsyncImage(
+            model = ImageUtils.getAlbumArt(album.id),
+            contentDescription = stringResource(id = R.string.artwork),
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
         Column(
             modifier = Modifier
                 .fillMaxWidth()

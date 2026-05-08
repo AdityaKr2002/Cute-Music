@@ -102,7 +102,6 @@ fun MusicListItem(
     }
 ) {
 
-    val context = LocalContext.current
     val isCurrentlyPlaying = musicState.track.uri.toString() == track.uri.toString() && musicState.isPlayerReady
     val bgColor by animateColorAsState(
         if (isCurrentlyPlaying) {
@@ -185,18 +184,13 @@ fun MusicListItem(
                         modifier = Modifier
                             .size(50.dp)
                             .clip(SquircleShape(smoothing = CornerSmoothing.Full))
+                            .background(MaterialTheme.colorScheme.surfaceContainer),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(MaterialTheme.colorScheme.surfaceContainer),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.music_note_rounded),
-                                contentDescription = null
-                            )
-                        }
+                        Icon(
+                            painter = painterResource(R.drawable.music_note_rounded),
+                            contentDescription = null
+                        )
                         AsyncImage(
                             model = track.artUri,
                             contentDescription = stringResource(R.string.artwork),

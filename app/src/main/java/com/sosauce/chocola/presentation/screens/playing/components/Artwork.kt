@@ -127,8 +127,8 @@ fun Artwork(
         ) { page ->
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
                     .maskClip(MaterialTheme.shapes.extraLarge)
+                    .fillMaxWidth()
                     .aspectRatio(1f)
                     .background(MaterialTheme.colorScheme.surfaceContainer),
                 contentAlignment = Alignment.Center

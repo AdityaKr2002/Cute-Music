@@ -16,11 +16,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -42,6 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -74,6 +77,8 @@ import com.sosauce.chocola.utils.ImageUtils
 import com.sosauce.chocola.utils.barsContentTransform
 import com.sosauce.chocola.utils.selfAlignHorizontally
 import com.sosauce.sweetselect.rememberSweetSelectState
+import sv.lib.squircleshape.CornerSmoothing
+import sv.lib.squircleshape.SquircleShape
 
 @Composable
 fun SharedTransitionScope.ArtistDetailsScreen(
@@ -164,17 +169,73 @@ fun SharedTransitionScope.ArtistDetailsScreen(
                         HorizontalMultiBrowseCarousel(
                             state = rememberCarouselState { state.albums.count() },
                             preferredItemWidth = 186.dp,
+                            itemSpacing = 5.dp,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 16.dp, bottom = 16.dp)
                         ) { index ->
                             val album = state.albums[index]
 
-                            AlbumCard(
-                                modifier = Modifier.maskClip(MaterialTheme.shapes.extraLarge),
-                                album = album,
-                                onClick = { onNavigate(Screen.AlbumsDetails(album.name)) }
-                            )
+                            Box(
+                                modifier = Modifier
+                                    .maskClip(MaterialTheme.shapes.extraLarge)
+                                    .fillMaxWidth()
+                                    .aspectRatio(1f)
+                                    .background(MaterialTheme.colorScheme.surfaceContainer),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.album_filled),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(48.dp)
+                                )
+                                AsyncImage(
+                                    model = ImageUtils.getAlbumArt(album.id),
+                                    contentDescription = stringResource(id = R.string.artwork),
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.Crop
+                                )
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .align(Alignment.BottomStart)
+                                        .background(
+                                            brush = Brush.verticalGradient(
+                                                listOf(Color.Transparent, MaterialTheme.colorScheme.background)
+                                            )
+                                        )
+                                        .padding(15.dp)
+                                ) {
+                                    Text(
+                                        text = album.name,
+                                        maxLines = 1,
+                                        style = MaterialTheme.typography.titleMediumEmphasized,
+                                        modifier = Modifier
+                                            .sharedBounds(
+                                                sharedContentState = rememberSharedContentState(album.name + album.id),
+                                                animatedVisibilityScope = LocalNavAnimatedContentScope.current
+                                            )
+                                            .basicMarquee()
+                                    )
+                                    Text(
+                                        text = album.artist,
+                                        style = MaterialTheme.typography.bodyLargeEmphasized,
+                                        modifier = Modifier
+                                            .sharedElement(
+                                                sharedContentState = rememberSharedContentState(album.artist + album.id),
+                                                animatedVisibilityScope = LocalNavAnimatedContentScope.current
+                                            )
+                                            .basicMarquee()
+
+                                    )
+                                }
+                            }
+
+//                            AlbumCard(
+//                                modifier = Modifier.maskClip(MaterialTheme.shapes.extraLarge),
+//                                album = album,
+//                                onClick = { onNavigate(Screen.AlbumsDetails(album.name)) }
+//                            )
                         }
                     }
                 }
