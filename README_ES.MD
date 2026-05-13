@@ -13,10 +13,10 @@
   <a href="https://github.com/sosauce/CuteMusic/releases">
     <img src="https://i.ibb.co/q0mdc4Z/get-it-on-github.png" height="80" />
   </a>
-  <a href="https://apt.izzysoft.de/fdroid/index/apk/chocola">
+  <a href="https://apt.izzysoft.de/fdroid/index/apk/com.sosauce.cutemusic">
     <img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="80" />
   </a>
-  <a href="https://f-droid.org/en/packages/chocola/">
+  <a href="https://f-droid.org/packages/com.sosauce.cutemusic/">
     <img src="https://f-droid.org/badge/get-it-on.png" height="80" />
   </a>
 </p>
