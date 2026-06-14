@@ -49,7 +49,6 @@ import com.sosauce.chocola.utils.ArtworkShape
 import com.sosauce.chocola.utils.LyricsAlignment
 import com.sosauce.chocola.utils.ThumbStyle
 import com.sosauce.chocola.utils.TrackStyle
-import com.sosauce.chocola.utils.getItemShape
 
 @Composable
 fun SettingsNowPlaying() {
@@ -58,8 +57,6 @@ fun SettingsNowPlaying() {
     var useCarousel by rememberCarousel()
     var showAlbumName by rememberShowAlbumName()
     var centerTitle by rememberCenterTitle()
-    var lyricsAlignment by rememberLyricsAlignment()
-    var lyricsFontSize by rememberLyricsFontSize()
     var thumbStyle by rememberThumbStyle()
     var trackStyle by rememberTrackStyle()
 
@@ -76,11 +73,6 @@ fun SettingsNowPlaying() {
         ArtworkShape.DIAMOND,
         ArtworkShape.BUN,
         ArtworkShape.HEART
-    )
-    val lyricsAlignmentOptions = listOf(
-        LyricsAlignment.START,
-        LyricsAlignment.CENTERED,
-        LyricsAlignment.END
     )
     val thumbs = listOf(
         ThumbStyle.STRAIGHT,
@@ -198,70 +190,6 @@ fun SettingsNowPlaying() {
                 bottomDp = 24.dp,
                 text = stringResource(R.string.show_album_name)
             )
-        }
-        SettingsWithTitle(
-            title = R.string.lyrics
-        ) {
-            SettingsDropdownMenu(
-                value = lyricsAlignment,
-                topDp = 24.dp,
-                bottomDp = 4.dp,
-                text = R.string.alignment
-            ) { onClose ->
-                lyricsAlignmentOptions.fastForEachIndexed { index, alignment ->
-                    val selected = alignment == lyricsAlignment
-
-                    val trailingIcon: @Composable (() -> Unit)? = if (selected) {
-                        {
-                            Icon(
-                                painter = painterResource(R.drawable.check),
-                                contentDescription = null
-                            )
-                        }
-                    } else null
-
-                    DropdownMenuItem(
-                        selected = selected,
-                        onClick = {
-                            lyricsAlignment = alignment
-                            onClose()
-                        },
-                        shapes = MenuDefaults.itemShape(index, lyricsAlignmentOptions.size),
-                        text = { Text(alignment) },
-                        trailingIcon = trailingIcon
-                    )
-                }
-            }
-            SettingsDropdownMenu(
-                value = lyricsFontSize,
-                topDp = 4.dp,
-                bottomDp = 24.dp,
-                text = R.string.font_size
-            ) { onClose ->
-                (20..40).forEachIndexed { index, size ->
-
-                    val selected = size == lyricsFontSize
-
-                    val trailingIcon: @Composable (() -> Unit)? = if (selected) {
-                        {
-                            Icon(
-                                painter = painterResource(R.drawable.check),
-                                contentDescription = null
-                            )
-                        }
-                    } else null
-                    DropdownMenuItem(
-                        selected = selected,
-                        onClick = {
-                            lyricsFontSize = size
-                            onClose()
-                        },
-                        shapes = MenuDefaults.itemShape(index, 20),
-                        text = { Text(size.toString()) },
-                        trailingIcon = trailingIcon
-                    )
-                }
-            }
         }
     }
 }

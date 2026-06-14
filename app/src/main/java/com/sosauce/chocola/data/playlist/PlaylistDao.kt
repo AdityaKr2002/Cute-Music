@@ -14,7 +14,7 @@ interface PlaylistDao {
     suspend fun upsertPlaylist(playlist: Playlist)
 
     @Delete
-    suspend fun deletePlaylist(playlist: Playlist)
+    suspend fun deletePlaylist(playlists: List<Playlist>)
 
     @Query("SELECT * FROM playlist ORDER BY name ASC")
     fun getPlaylists(): Flow<List<Playlist>>

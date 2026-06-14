@@ -20,6 +20,7 @@ import androidx.media3.common.Metadata
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.MoreExecutors
@@ -60,6 +61,7 @@ class MusicViewModel(
 
     var sleepCountdownTimer: CountDownTimer? = null
     private val playerListener =
+        @UnstableApi
         object : Player.Listener {
 
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
@@ -75,13 +77,18 @@ class MusicViewModel(
                     _musicState.update {
                         it.copy(
                             track = track,
-                            audioSessionAudio = mediaController!!.sessionExtras.getInt(
-                                "audioSessionId",
-                                0
-                            ),
                             mediaIndex = mediaController!!.currentMediaItemIndex
                         )
                     }
+                }
+            }
+
+            override fun onAudioSessionIdChanged(audioSessionId: Int) {
+                super.onAudioSessionIdChanged(audioSessionId)
+                _musicState.update {
+                    it.copy(
+                        audioSessionAudio = audioSessionId
+                    )
                 }
             }
 
@@ -172,6 +179,7 @@ class MusicViewModel(
                                 position = player.currentPosition
                             )
                         }
+                        //if (player.currentPosition >= 5000L) player.seekTo(0)
                         delay(500)
                     }
                 }

@@ -35,6 +35,7 @@ import java.io.File
 
 @Composable
 fun FolderHeader(
+    modifier: Modifier = Modifier,
     category: Category,
     isHidden: Boolean,
     onToggleVisibility: () -> Unit,
@@ -47,9 +48,12 @@ fun FolderHeader(
 
     CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.primary) {
         Row(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
-                .padding(horizontal = 5.dp)
+                .padding(
+                    horizontal = 5.dp,
+                    vertical = 2.dp
+                )
                 .background(
                     color = MaterialTheme.colorScheme.surfaceContainer,
                     shape = RoundedCornerShape(12.dp)

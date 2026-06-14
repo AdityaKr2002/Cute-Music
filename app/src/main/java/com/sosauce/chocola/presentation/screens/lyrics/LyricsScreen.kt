@@ -68,6 +68,7 @@ import com.sosauce.chocola.data.datastore.rememberLyricsFontSize
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.domain.model.Lyrics
+import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.presentation.screens.playing.components.PlayPauseButton
 import com.sosauce.chocola.presentation.shared_components.animations.AnimatedFab
 import com.sosauce.chocola.presentation.shared_components.animations.AnimatedIconButton
@@ -80,6 +81,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun LyricsScreen(
     onNavigateBack: () -> Unit,
+    onNavigate: (Screen) -> Unit,
     state: LyricsState,
     musicState: MusicState,
     onHandlePlayerActions: (PlayerActions) -> Unit,
@@ -182,11 +184,9 @@ fun LyricsScreen(
             ) {
                 if (state.lyrics.isEmpty()) {
                     item {
-
-                        val interactionSources = List(2) { rememberInteractionSource() }
-
                         Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.padding(horizontal = 15.dp)
                         ) {
                             Text(
                                 text = stringResource(R.string.no_lyrics_note),
@@ -195,53 +195,58 @@ fun LyricsScreen(
                                 )
                             )
                             Spacer(Modifier.height(10.dp))
-                            ButtonGroup(
-                                modifier = Modifier.padding(horizontal = 30.dp),
-                                horizontalArrangement = Arrangement.spacedBy(2.dp)
+
+                            Button(
+                                onClick = {
+                                    val query =
+                                        "${musicState.track.title} ${musicState.track.artist} lyrics"
+                                    val intent = Intent(Intent.ACTION_WEB_SEARCH).apply {
+                                        putExtra(SearchManager.QUERY, query)
+                                    }
+                                    context.startActivity(intent)
+                                },
+                                shapes = ButtonDefaults.shapes(),
+                                modifier = Modifier.fillMaxWidth()
                             ) {
-                                Button(
-                                    onClick = {
-                                        val query =
-                                            "${musicState.track.title} ${musicState.track.artist} lyrics"
-                                        val intent = Intent(Intent.ACTION_WEB_SEARCH).apply {
-                                            putExtra(SearchManager.QUERY, query)
-                                        }
-                                        context.startActivity(intent)
-                                    },
-                                    shape = RoundedCornerShape(topStart = 50.dp, bottomStart = 50.dp, topEnd = 4.dp, bottomEnd = 4.dp),
-                                    interactionSource = interactionSources[0],
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .animateWidth(interactionSources[0])
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.search),
-                                        contentDescription = null
-                                    )
-                                    Spacer(Modifier.width(ICON_TEXT_SPACING.dp))
-                                    Text(
-                                        text = stringResource(R.string.search),
-                                        maxLines = 1
-                                    )
-                                }
-                                Button(
-                                    onClick = { lyricFilePicker.launch(arrayOf("*/*")) },
-                                    shape = RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp, topEnd = 50.dp, bottomEnd = 50.dp),
-                                    interactionSource = interactionSources[1],
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .animateWidth(interactionSources[1])
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.resource_import),
-                                        contentDescription = null
-                                    )
-                                    Spacer(Modifier.width(ICON_TEXT_SPACING.dp))
-                                    Text(
-                                        text = stringResource(R.string.load),
-                                        maxLines = 1
-                                    )
-                                }
+                                Icon(
+                                    painter = painterResource(R.drawable.search),
+                                    contentDescription = null
+                                )
+                                Spacer(Modifier.width(ICON_TEXT_SPACING.dp))
+                                Text(
+                                    text = stringResource(R.string.search),
+                                    maxLines = 1
+                                )
+                            }
+                            Button(
+                                onClick = { onNavigate(Screen.MetadataEditor(musicState.track.path, musicState.track.uri.toString())) },
+                                modifier = Modifier.fillMaxWidth(),
+                                shapes = ButtonDefaults.shapes()
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.edit_rounded),
+                                    contentDescription = null
+                                )
+                                Spacer(Modifier.width(ICON_TEXT_SPACING.dp))
+                                Text(
+                                    text = stringResource(R.string.edit),
+                                    maxLines = 1
+                                )
+                            }
+                            Button(
+                                onClick = { lyricFilePicker.launch(arrayOf("*/*")) },
+                                modifier = Modifier.fillMaxWidth(),
+                                shapes = ButtonDefaults.shapes()
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.resource_import),
+                                    contentDescription = null
+                                )
+                                Spacer(Modifier.width(ICON_TEXT_SPACING.dp))
+                                Text(
+                                    text = stringResource(R.string.load),
+                                    maxLines = 1
+                                )
                             }
                         }
                     }

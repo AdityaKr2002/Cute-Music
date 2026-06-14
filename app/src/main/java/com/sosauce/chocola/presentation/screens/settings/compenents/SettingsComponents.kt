@@ -2,6 +2,8 @@
 
 package com.sosauce.chocola.presentation.screens.settings.compenents
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateIntAsState
@@ -77,7 +79,7 @@ fun SettingsSwitch(
     bottomDp: Dp,
     text: String,
     onCheckedChange: () -> Unit,
-    optionalDescription: Int? = null
+    @StringRes optionalDescription: Int? = null
 ) {
     Card(
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
@@ -124,12 +126,58 @@ fun SettingsSwitch(
 }
 
 @Composable
+fun ClickableSettingsCard(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    topDp: Dp,
+    bottomDp: Dp,
+    text: String,
+    @StringRes optionalDescription: Int? = null
+) {
+    Card(
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 2.dp),
+        shape = RoundedCornerShape(
+            topStart = topDp,
+            topEnd = topDp,
+            bottomStart = bottomDp,
+            bottomEnd = bottomDp
+        ),
+        onClick = onClick
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.padding(15.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column {
+                    Text(text)
+                    optionalDescription?.let {
+                        Text(
+                            text = stringResource(it),
+                            style = MaterialTheme.typography.labelSmallEmphasized.copy(
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun <T> SettingsDropdownMenu(
     value: T,
     topDp: Dp,
     bottomDp: Dp,
     text: Int,
-    optionalDescription: Int? = null,
+    @StringRes optionalDescription: Int? = null,
     dropdownContent: @Composable (ColumnScope.(onClose: () -> Unit) -> Unit)
 ) {
 
@@ -207,7 +255,7 @@ fun SliderSettingsCards(
     unit: String? = null,
     valueRange: ClosedFloatingPointRange<Float> = 0f..60f,
     onValueChange: (Int) -> Unit,
-    optionalDescription: Int? = null,
+    @StringRes optionalDescription: Int? = null,
 ) {
 
     val animatedValue by animateIntAsState(value)

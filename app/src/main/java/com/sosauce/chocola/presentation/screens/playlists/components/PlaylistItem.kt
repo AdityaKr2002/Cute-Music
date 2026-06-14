@@ -54,7 +54,7 @@ import com.sosauce.chocola.data.models.Playlist
 import com.sosauce.chocola.domain.actions.PlaylistActions
 import com.sosauce.chocola.presentation.shared_components.CuteListItem
 import com.sosauce.chocola.presentation.shared_components.MoreOptions
-import com.sosauce.chocola.presentation.shared_components.PlaylistDeletionDialog
+import com.sosauce.chocola.presentation.shared_components.dialogs.PlaylistDeletionDialog
 import com.sosauce.chocola.presentation.shared_components.SelectedItemLogo
 import sv.lib.squircleshape.CornerSmoothing
 import sv.lib.squircleshape.SquircleShape
@@ -126,7 +126,7 @@ fun PlaylistItem(
 
     if (showDeletionDialog) {
         PlaylistDeletionDialog(
-            playlist = playlist,
+            playlists = listOf(playlist),
             onHandlePlaylistAction = onHandlePlaylistActions,
             onDismissRequest = { showDeletionDialog = false }
         )
@@ -194,10 +194,19 @@ fun PlaylistItem(
                     shapes = IconButtonDefaults.shapes(),
                     enabled = enabled
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.more_vert),
-                        contentDescription = null
-                    )
+                    AnimatedContent(isDropdownExpanded) {
+                        if (it) {
+                            Icon(
+                                painter = painterResource(R.drawable.close),
+                                contentDescription = null
+                            )
+                        } else {
+                            Icon(
+                                painter = painterResource(R.drawable.more_vert),
+                                contentDescription = null
+                            )
+                        }
+                    }
                 }
 
                 DropdownMenuPopup(

@@ -66,9 +66,9 @@ class PlaylistViewModel(
 
     fun handlePlaylistActions(action: PlaylistActions) {
         when (action) {
-            is PlaylistActions.DeletePlaylist -> {
+            is PlaylistActions.DeletePlaylists -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    dao.deletePlaylist(action.playlist)
+                    dao.deletePlaylist(action.playlists)
                 }
             }
 

@@ -37,7 +37,7 @@ import com.sosauce.chocola.presentation.screens.playing.components.QuickActionsR
 import com.sosauce.chocola.presentation.screens.playing.components.SpeedCard
 import com.sosauce.chocola.presentation.screens.playing.components.TitleAndArtist
 import com.sosauce.chocola.presentation.screens.playlists.components.PlaylistPicker
-import com.sosauce.chocola.presentation.shared_components.MusicDetailsDialog
+import com.sosauce.chocola.presentation.shared_components.dialogs.MusicDetailsDialog
 
 @Composable
 fun NowPlayingLandscape(

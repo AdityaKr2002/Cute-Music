@@ -8,9 +8,7 @@ package com.sosauce.chocola.presentation.shared_components
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
@@ -20,12 +18,10 @@ import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Badge
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.DropdownMenuGroup
@@ -37,13 +33,11 @@ import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,7 +46,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -62,10 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.core.app.ShareCompat
 import androidx.core.net.toUri
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import coil3.compose.AsyncImagePainter
-import coil3.compose.rememberAsyncImagePainter
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberAllSafTracks
 import com.sosauce.chocola.data.datastore.rememberHiddenTracks
@@ -74,7 +64,8 @@ import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.presentation.screens.playlists.components.PlaylistPicker
-import com.sosauce.chocola.utils.ImageUtils
+import com.sosauce.chocola.presentation.shared_components.dialogs.DeletionDialog
+import com.sosauce.chocola.presentation.shared_components.dialogs.MusicDetailsDialog
 import com.sosauce.chocola.utils.LocalScreen
 import com.sosauce.chocola.utils.bouncySpec
 import com.sosauce.chocola.utils.copyMutate
@@ -298,6 +289,14 @@ private fun TrackDropdownMenu(
             },
             icon = R.drawable.edit_rounded
         ),
+//        MoreOptions(
+//            text = { "Transform" },
+//            onClick = {
+//                onDismissRequest()
+//                onNavigate(Screen.Transformer(track.uri.toString()))
+//            },
+//            icon = R.drawable.edit_rounded
+//        ),
         MoreOptions(
             text = { stringResource(R.string.add_queue) },
             onClick = { onHandlePlayerActions(PlayerActions.AddToQueue(listOf(track))) },
@@ -361,7 +360,7 @@ private fun TrackDropdownMenu(
 
     if (showDeletionDialog) {
         DeletionDialog(
-            track = track,
+            tracks = listOf(track),
             onDismissRequest = { showDeletionDialog = false }
         )
     }

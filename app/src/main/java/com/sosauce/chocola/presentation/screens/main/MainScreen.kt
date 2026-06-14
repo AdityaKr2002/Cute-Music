@@ -221,6 +221,7 @@ fun SharedTransitionScope.MainScreen(
                             categories.fastForEach { category ->
                                 item {
                                     FolderHeader(
+                                        modifier = Modifier.animateItem(),
                                         category = category,
                                         isHidden = category.name in hiddenFolders,
                                         onToggleVisibility = {

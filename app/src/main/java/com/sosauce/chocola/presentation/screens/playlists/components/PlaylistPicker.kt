@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.style.Style
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -19,7 +20,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberBottomSheetState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,11 +52,9 @@ fun PlaylistPicker(
     onDismissRequest: () -> Unit,
     onAddingFinished: () -> Unit = {}
 ) {
-    val context = LocalContext.current
     val playlistViewModel = koinViewModel<PlaylistViewModel>()
     val state by playlistViewModel.state.collectAsStateWithLifecycle()
     var showPlaylistCreatorDialog by remember { mutableStateOf(false) }
-
 
 
     if (showPlaylistCreatorDialog) {

@@ -23,4 +23,5 @@ data class MusicState(
     val bitrate: Int = 0,
     val sampleRate: Int = 0,
     val channelCount: Int = 0,
+    val segment: Pair<Long, Long>? = null
 )

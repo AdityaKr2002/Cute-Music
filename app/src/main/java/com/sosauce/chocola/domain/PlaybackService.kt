@@ -8,13 +8,17 @@ import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Bitmap
+import android.media.audiofx.BassBoost
 import android.media.audiofx.Equalizer
+import android.media.audiofx.LoudnessEnhancer
+import android.media.audiofx.PresetReverb
 import android.os.Build
 import android.os.Bundle
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastMap
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.AudioAttributes
+import androidx.media3.common.AuxEffectInfo
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
@@ -27,6 +31,7 @@ import androidx.media3.session.MediaConstants
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaLibraryService.MediaLibrarySession
 import androidx.media3.session.MediaSession
+import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.UserPreferences
@@ -56,7 +61,6 @@ class PlaybackService : MediaLibraryService(), MediaLibrarySession.Callback, Pla
     WidgetCallback, KoinComponent, EqualizerCallback {
 
 
-    private val ioScope = CoroutineScope(Dispatchers.IO)
 
     private var mediaLibrarySession: MediaLibrarySession? = null
 
@@ -105,9 +109,6 @@ class PlaybackService : MediaLibraryService(), MediaLibrarySession.Callback, Pla
     @SuppressLint("UnsafeOptInUsageError")
     override fun onAudioSessionIdChanged(audioSessionId: Int) {
         super.onAudioSessionIdChanged(audioSessionId)
-        mediaLibrarySession?.sessionExtras = Bundle().apply {
-            putInt("audioSessionId", audioSessionId)
-        }
         cleanupEqualizer()
         equalizer = Equalizer(0, audioSessionId).apply {
             lifecycleScope.launch(Dispatchers.IO) {
@@ -148,8 +149,8 @@ class PlaybackService : MediaLibraryService(), MediaLibrarySession.Callback, Pla
 
                 enabled = isEnabled
             }
-
         }
+
     }
 
     private fun cleanupEqualizer() {
@@ -237,6 +238,7 @@ class PlaybackService : MediaLibraryService(), MediaLibrarySession.Callback, Pla
 
 
     override fun onDestroy() {
+        cleanupEqualizer()
         mediaLibrarySession?.run {
             player.release()
             release()
@@ -261,25 +263,21 @@ class PlaybackService : MediaLibraryService(), MediaLibrarySession.Callback, Pla
         session: MediaLibraryService.MediaLibrarySession,
         browser: MediaSession.ControllerInfo,
         params: LibraryParams?
-    ): ListenableFuture<LibraryResult<MediaItem>> {
-
-        var responseParams = params
-
-        if (session.isAutomotiveController(browser)) {
-            responseParams = params ?: LibraryParams.Builder().build().apply {
-                extras.putInt(
-                    MediaConstants.EXTRAS_KEY_CONTENT_STYLE_BROWSABLE,
-                    MediaConstants.EXTRAS_VALUE_CONTENT_STYLE_GRID_ITEM
+    ): ListenableFuture<LibraryResult<MediaItem>> = Futures.immediateFuture(
+        LibraryResult.ofItem(
+            MediaItem.Builder()
+                .setMediaId("CHOCOLA_ROOT_ID")
+                .setMediaMetadata(
+                    MediaMetadata.Builder()
+                        .setIsPlayable(false)
+                        .setIsBrowsable(false)
+                        .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
+                        .build()
                 )
-                extras.putInt(
-                    MediaConstants.EXTRAS_KEY_CONTENT_STYLE_PLAYABLE,
-                    MediaConstants.EXTRAS_VALUE_CONTENT_STYLE_LIST_ITEM
-                )
-            }
-        }
-
-        return super.onGetLibraryRoot(session, browser, responseParams)
-    }
+                .build(),
+            params
+        )
+    )
 
 
 

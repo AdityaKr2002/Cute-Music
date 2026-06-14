@@ -17,6 +17,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -54,6 +55,7 @@ fun RateAdjustmentDialog(
     val newRate =
         remember(textFieldState.text) { textFieldState.text.toString().toFloatOrNull() ?: 1.0f }
     val isError = remember(newRate) { newRate !in 0.5f..3.0f }
+    val textStyle = LocalTextStyle.current
 
 
     AlertDialog(
@@ -105,7 +107,7 @@ fun RateAdjustmentDialog(
                         .selfAlignHorizontally()
                         .fillMaxWidth(0.5f)
                         .focusRequester(focusRequest),
-                    textStyle = TextStyle(
+                    textStyle = textStyle.copy(
                         textAlign = TextAlign.Center
                     ),
                     isError = isError,

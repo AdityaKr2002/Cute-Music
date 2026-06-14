@@ -60,6 +60,7 @@ import com.sosauce.chocola.presentation.shared_components.NoXFound
 import com.sosauce.chocola.presentation.shared_components.SelectedBarSurface
 import com.sosauce.chocola.presentation.shared_components.SortingDropdownMenu
 import com.sosauce.chocola.presentation.shared_components.animations.ToggleAnimatedFab
+import com.sosauce.chocola.presentation.shared_components.dialogs.PlaylistDeletionDialog
 import com.sosauce.chocola.utils.barsContentTransform
 import com.sosauce.chocola.utils.selfAlignHorizontally
 import com.sosauce.sweetselect.rememberSweetSelectState
@@ -79,6 +80,7 @@ fun SharedTransitionScope.PlaylistsScreen(
     val lazyState = rememberLazyListState()
     var isSortedByASC by rememberSortPlaylistsAscending()
     var fabMenuExpanded by remember { mutableStateOf(false) }
+    var showDeletionDialog by remember { mutableStateOf(false) }
     var playlistSort by rememberPlaylistSort()
     val multiSelectState = rememberSweetSelectState<Playlist>()
 
@@ -103,6 +105,14 @@ fun SharedTransitionScope.PlaylistsScreen(
         CreatePlaylistDialog { showPlaylistCreatorDialog = false }
     }
 
+    if (showDeletionDialog) {
+        PlaylistDeletionDialog(
+            playlists = multiSelectState.selectedItems.toList(),
+            onHandlePlaylistAction = onHandlePlaylistAction,
+            onDismissRequest = { showDeletionDialog = false }
+        )
+    }
+
     if (state.isLoading) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -125,12 +135,7 @@ fun SharedTransitionScope.PlaylistsScreen(
                             multiSelectState = multiSelectState
                         ) {
                             Button(
-                                onClick = {
-                                    multiSelectState.selectedItems.forEach { playlist ->
-                                        onHandlePlaylistAction(PlaylistActions.DeletePlaylist(playlist))
-                                    }
-                                    multiSelectState.clearSelected()
-                                },
+                                onClick = { showDeletionDialog = true },
                                 shape = RoundedCornerShape(50.dp),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = MaterialTheme.colorScheme.surfaceContainer,

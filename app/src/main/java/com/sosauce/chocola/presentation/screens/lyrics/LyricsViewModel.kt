@@ -12,29 +12,29 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LyricsViewModel(
-    private val trackPath: String,
+    path: String,
     private val lyricsParser: LyricsParser
 ): ViewModel() {
 
     private val _state = MutableStateFlow(LyricsState(true))
     val state = _state.asStateFlow()
 
-    init {
+    fun loadLrcFile(uri: Uri) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val lyrics = lyricsParser.parseLyrics(uri.path ?: return@launch)
+            _state.update {
+                it.copy(lyrics = lyrics)
+            }
+        }
+    }
+
+    fun parseLyrics(trackPath: String) {
         viewModelScope.launch(Dispatchers.IO) {
             _state.update {
                 it.copy(
                     isLoading = false,
                     lyrics = lyricsParser.parseLyrics(trackPath)
                 )
-            }
-        }
-    }
-
-    fun loadLrcFile(uri: Uri) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val lyrics = lyricsParser.parseLyrics(uri.path ?: return@launch)
-            _state.update {
-                it.copy(lyrics = lyrics)
             }
         }
     }

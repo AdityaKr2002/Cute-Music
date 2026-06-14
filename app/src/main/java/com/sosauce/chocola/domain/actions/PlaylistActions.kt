@@ -6,7 +6,7 @@ import com.sosauce.chocola.data.models.Playlist
 sealed interface PlaylistActions {
 
     data class CreatePlaylist(val playlist: Playlist) : PlaylistActions
-    data class DeletePlaylist(val playlist: Playlist) : PlaylistActions
+    data class DeletePlaylists(val playlists: List<Playlist>) : PlaylistActions
     data class UpsertPlaylist(val playlist: Playlist) :
         PlaylistActions // Modify a playlist basically
 

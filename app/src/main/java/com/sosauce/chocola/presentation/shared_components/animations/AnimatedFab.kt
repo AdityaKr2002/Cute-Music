@@ -3,6 +3,7 @@
 package com.sosauce.chocola.presentation.shared_components.animations
 
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,10 +11,14 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialShapes
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.toPath
 import androidx.compose.runtime.Composable
@@ -29,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
@@ -89,27 +95,46 @@ fun AnimatedFab(
     @DrawableRes icon: Int,
     modifier: Modifier = Modifier,
     minSize: Dp = 56.dp,
-    containerColor: Color = FloatingActionButtonDefaults.containerColor
+    containerColor: Color = FloatingActionButtonDefaults.containerColor,
+    enabled: Boolean = true
 ) {
     val interactionSource = rememberInteractionSource()
     val isPressed by interactionSource.collectIsPressedAsState()
     val fabAnimation = rememberFabAnimations(isPressed)
+    val color by animateColorAsState(
+        if (enabled) containerColor else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+    )
+    val contentColor by animateColorAsState(
+        targetValue = contentColorFor(color).copy(
+            alpha = if (enabled) 1f else 0.1f
+        )
+    )
 
     Box(
         modifier = modifier
-            .scale(fabAnimation.scale)
+            .graphicsLayer {
+                scaleX = fabAnimation.scale
+                scaleY = fabAnimation.scale
+            }
             .defaultMinSize(minWidth = minSize, minHeight = minSize)
             .clip(fabAnimation.shape)
-            .background(containerColor)
-            .clickable(interactionSource = interactionSource, indication = null, onClick = onClick)
+            .background(color)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                enabled = enabled,
+                onClick = onClick
+            )
     ) {
         Icon(
             painter = painterResource(icon),
             contentDescription = null,
-            tint = contentColorFor(containerColor),
+            tint = contentColor,
             modifier = Modifier
                 .align(Alignment.Center)
-                .rotate(fabAnimation.rotation)
+                .graphicsLayer {
+                    rotationZ = fabAnimation.rotation
+                }
         )
     }
 }

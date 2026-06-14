@@ -495,14 +495,6 @@ fun String.toLyricsAlignment(): TextAlign {
     }
 }
 
-@Composable
-fun MenuDefaults.getItemShape(index: Int, lastIndex: Int): Shape {
-    return when(index) {
-        0 -> leadingItemShape
-        lastIndex -> trailingItemShape
-        else -> middleItemShape
-    }
-}
 
 fun Double.round(decimals: Int): Double {
     var multiplier = 1.0
@@ -536,5 +528,13 @@ fun Long.formatDate(): String {
         formatter.format(date)
     } else {
         "Unknown"
+    }
+}
+
+fun Int.toLyricDuration(): String {
+    val duration = this.milliseconds
+    return duration.toComponents { _, minutes, seconds, nanoseconds ->
+        val millis = nanoseconds / 1_000_000
+        String.format(Locale.getDefault(), "%d:%02d.%03d", minutes, seconds, millis)
     }
 }

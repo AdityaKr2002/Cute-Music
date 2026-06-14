@@ -15,6 +15,7 @@ import com.sosauce.chocola.presentation.screens.album.AlbumDetailsViewModel
 import com.sosauce.chocola.presentation.screens.album.AlbumsViewModel
 import com.sosauce.chocola.presentation.screens.artist.ArtistDetailsViewModel
 import com.sosauce.chocola.presentation.screens.artist.ArtistsViewModel
+import com.sosauce.chocola.presentation.screens.lyrics.LyricsEditorViewModel
 import com.sosauce.chocola.presentation.screens.lyrics.LyricsViewModel
 import com.sosauce.chocola.presentation.screens.main.MainViewModel
 import com.sosauce.chocola.presentation.screens.metadata.MetadataViewModel
@@ -25,6 +26,8 @@ import com.sosauce.chocola.presentation.screens.settings.FoldersViewModel
 import com.sosauce.chocola.presentation.screens.settings.HiddenTracksViewModel
 import com.sosauce.chocola.presentation.screens.settings.PlaybackSettingsViewModel
 import com.sosauce.chocola.presentation.screens.settings.SafViewModel
+import com.sosauce.chocola.presentation.screens.transformer.TransformerViewModel
+import com.sosauce.chocola.presentation.shared_components.dialogs.DeletionViewModel
 import com.sosauce.chocola.presentation.shared_components.MusicViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.dsl.singleOf
@@ -69,4 +72,7 @@ val appModule = module {
     viewModelOf(::LyricsViewModel)
     viewModelOf(::HiddenTracksViewModel)
     viewModelOf(::PlaybackSettingsViewModel)
+    viewModelOf(::TransformerViewModel)
+    viewModelOf(::DeletionViewModel)
+    viewModelOf(::LyricsEditorViewModel)
 }

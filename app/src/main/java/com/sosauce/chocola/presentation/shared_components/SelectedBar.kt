@@ -2,14 +2,6 @@
 
 package com.sosauce.chocola.presentation.shared_components
 
-import android.content.ContentProviderOperation
-import android.os.Build
-import android.provider.MediaStore
-import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,21 +18,16 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -48,13 +35,11 @@ import com.sosauce.chocola.R
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.presentation.screens.playlists.components.PlaylistPicker
+import com.sosauce.chocola.presentation.shared_components.dialogs.DeletionDialog
 import com.sosauce.chocola.utils.rememberInteractionSource
 import com.sosauce.chocola.utils.rememberSearchbarMaxFloatValue
 import com.sosauce.chocola.utils.rememberSearchbarRightPadding
 import com.sosauce.sweetselect.SweetSelectState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @Composable
 fun <T> SelectedBarSurface(
@@ -142,26 +127,32 @@ fun TracksSelectedBar(
     onHandlePlayerActions: (PlayerActions) -> Unit
 ) {
 
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     val interactionSources = List(3) { rememberInteractionSource() }
+    var showPlaylistDialog by remember { mutableStateOf(false) }
+    var showDeletionDialog by remember { mutableStateOf(false) }
+
+    if (showPlaylistDialog) {
+        PlaylistPicker(
+            mediaId = multiSelectState.selectedItems.map { it.mediaId },
+            onDismissRequest = { showPlaylistDialog = false },
+            onAddingFinished = multiSelectState::clearSelected
+        )
+    }
+
+    if (showDeletionDialog) {
+        DeletionDialog(
+            tracks = multiSelectState.selectedItems.toList(),
+            onDismissRequest = { showDeletionDialog = false }
+        )
+    }
+
 
     SelectedBarSurface(
         modifier = modifier,
         items = tracks,
         multiSelectState = multiSelectState
     ) {
-        var showPlaylistDialog by remember { mutableStateOf(false) }
-        val deleteSongLauncher =
-            rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {}
 
-        if (showPlaylistDialog) {
-            PlaylistPicker(
-                mediaId = multiSelectState.selectedItems.map { it.mediaId },
-                onDismissRequest = { showPlaylistDialog = false },
-                onAddingFinished = multiSelectState::clearSelected
-            )
-        }
 
         ButtonGroup(
             horizontalArrangement = Arrangement.spacedBy(2.dp)
@@ -204,34 +195,7 @@ fun TracksSelectedBar(
                 )
             }
             Button(
-                onClick = {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        val intentSender = MediaStore.createDeleteRequest(
-                            context.contentResolver,
-                            multiSelectState.selectedItems.map { it.uri }
-                        ).intentSender
-
-                        deleteSongLauncher.launch(IntentSenderRequest.Builder(intentSender).build())
-                    } else {
-                        scope.launch(Dispatchers.IO) {
-                            val ops = arrayListOf<ContentProviderOperation>()
-
-                            multiSelectState.selectedItems.forEach { item ->
-                                ops.add(
-                                    ContentProviderOperation.newDelete(item.uri).build()
-                                )
-                            }
-
-                            runCatching {
-                                context.contentResolver.applyBatch(MediaStore.AUTHORITY, ops)
-                            }.onFailure {
-                                withContext(Dispatchers.Main) {
-                                    Toast.makeText(context, "", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        }
-                    }
-                },
+                onClick = { showDeletionDialog = true },
                 interactionSource = interactionSources[2],
                 shape = RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp, topEnd = 50.dp, bottomEnd = 50.dp),
                 colors = ButtonDefaults.buttonColors(

@@ -10,12 +10,16 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.compose.ui.util.fastMap
 import com.kyant.taglib.TagLib
+import com.mocharealm.accompanist.lyrics.core.model.ISyncedLine
+import com.mocharealm.accompanist.lyrics.core.model.karaoke.KaraokeLine
 import com.mocharealm.accompanist.lyrics.core.model.synced.SyncedLine
+import com.mocharealm.accompanist.lyrics.core.model.synced.mapper.toSyncedLine
 import com.mocharealm.accompanist.lyrics.core.parser.AutoParser
 import com.mocharealm.accompanist.lyrics.core.parser.EnhancedLrcParser
 import com.sosauce.chocola.domain.model.Lyrics
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.io.FileNotFoundException
 
 class LyricsParser(private val context: Context) {
@@ -23,54 +27,41 @@ class LyricsParser(private val context: Context) {
     suspend fun parseLyrics(
         path: String
     ): List<Lyrics> = withContext(Dispatchers.IO) {
-        val uri = getLrcFileUri(path)
+        val parent = path.substringBeforeLast('/')
+        val fileName = path.substringAfterLast('/').replaceAfterLast('.', "lrc")
+        val lyricsFile = File(parent, fileName)
 
-        return@withContext if (uri != null) {
-            context.contentResolver.openInputStream(uri)?.bufferedReader()?.useLines { lines ->
+        println("testing: $path")
+
+        return@withContext if (lyricsFile.exists()) {
+            lyricsFile.bufferedReader().useLines { lines ->
                 val lyrics = EnhancedLrcParser.parse(lines.toList())
-                lyrics.lines.fastMap { line -> (line as SyncedLine).toLyricLine() }
-            } ?: emptyList()
+                lyrics.lines.fastMap { line ->
+                    if (line is SyncedLine) {
+                        line.toLyricLine()
+                    } else {
+                        (line as KaraokeLine).toSyncedLine().toLyricLine()
+                    }
+                }
+            }
         } else {
 
-            val autoParser = AutoParser()
             val embeddedLyrics = loadEmbeddedLyrics(path) ?: return@withContext emptyList()
+
 
 
             // Tries to load synced embedded lyrics, if embedded lyrics are unsynced, just return raw embedded lyrics
             autoParser.parse(embeddedLyrics)
                 .takeIf { it.lines.isNotEmpty() }
-                ?.lines?.fastMap { line -> (line as SyncedLine).toLyricLine() } ?: listOf(Lyrics(lineLyrics = embeddedLyrics))
+                ?.lines?.fastMap { line ->
+                    if (line is SyncedLine) {
+                        line.toLyricLine()
+                    } else {
+                        (line as KaraokeLine).toSyncedLine().toLyricLine()
+                    }
+                } ?: listOf(Lyrics(lineLyrics = embeddedLyrics))
         }
 
-    }
-
-    fun getLrcFileUri(path: String): Uri? {
-
-        val fileName = path.substringAfterLast('/').replaceAfterLast('.', "lrc")
-
-        val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL)
-        } else {
-            MediaStore.Files.getContentUri("external")
-        }
-
-        val projection = arrayOf(MediaStore.Files.FileColumns._ID)
-
-        val selection = "${MediaStore.Files.FileColumns.DISPLAY_NAME} = ?"
-        val selectionArgs = arrayOf(fileName)
-
-        return context.contentResolver.query(
-            uri,
-            projection,
-            selection,
-            selectionArgs,
-            null
-        )?.use { cursor ->
-            if (cursor.moveToFirst()) {
-                val id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID))
-                ContentUris.withAppendedId(uri, id)
-            } else null
-        }
     }
 
     private fun loadEmbeddedLyrics(path: String): String? {
@@ -117,6 +108,10 @@ class LyricsParser(private val context: Context) {
             timestamp = this.start,
             lineLyrics = this.content
         )
+    }
+
+    companion object {
+        private val autoParser = AutoParser()
     }
 
 }

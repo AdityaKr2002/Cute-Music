@@ -36,6 +36,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FloatingActionButton
@@ -70,18 +72,22 @@ import com.kyant.taglib.Picture
 import com.sosauce.chocola.R
 import com.sosauce.chocola.domain.actions.MetadataActions
 import com.sosauce.chocola.domain.actions.PlayerActions
+import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.presentation.shared_components.ThreadDivider
 import com.sosauce.chocola.presentation.shared_components.animations.AnimatedFab
 import com.sosauce.chocola.utils.ImageUtils
+import com.sosauce.chocola.utils.selfAlignHorizontally
 import kotlinx.coroutines.flow.collectLatest
 import sv.lib.squircleshape.CornerSmoothing
 import sv.lib.squircleshape.SquircleShape
+import androidx.core.net.toUri
 
 @Composable
 fun MetadataEditor(
     trackUri: Uri,
-    fileName: String,
+    trackPath: String,
     onNavigateUp: () -> Unit,
+    onNavigate: (Screen) -> Unit,
     metadataViewModel: MetadataViewModel
 ) {
 
@@ -113,14 +119,12 @@ fun MetadataEditor(
             metadataViewModel.onHandleMetadataActions(MetadataActions.SaveChanges)
             onNavigateUp()
         } else {
-            Toast.makeText(context, context.getString(R.string.error_saving), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, resources.getString(R.string.error_saving), Toast.LENGTH_SHORT).show()
         }
     }
 
     LaunchedEffect(true) {
         metadataViewModel.legacyAskPermission.collectLatest {
-
-            println("New event")
             it?.let {
                 val request = IntentSenderRequest.Builder(it.intentSender).build()
                 legacyPermissionLauncher.launch(request)
@@ -200,7 +204,7 @@ fun MetadataEditor(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "${stringResource(R.string.file_name)}: ${fileName.substringBeforeLast(".")}",
+                        text = "${stringResource(R.string.file_name)}: ${trackPath.substringAfterLast('/').substringBeforeLast(".")}",
                         style = MaterialTheme.typography.labelMediumEmphasized.copy(
                             MaterialTheme.colorScheme.onSurfaceVariant
                         ),
@@ -310,6 +314,13 @@ fun MetadataEditor(
                 ) { lyrics ->
                     metadataState.mutablePropertiesMap["LYRICS"] = lyrics
                 }
+                Button(
+                    onClick = { onNavigate(Screen.LyricsEditor(trackPath)) },
+                    shapes = ButtonDefaults.shapes(),
+                    modifier = Modifier.selfAlignHorizontally()
+                ) {
+                    Text(stringResource(R.string.lyrics_editor))
+                }
             }
         }
     }
@@ -368,7 +379,7 @@ private fun MetadataArt(
                 contentDescription = stringResource(id = R.string.artwork),
                 modifier = Modifier
                     .size(230.dp)
-                    .clip(SquircleShape(percent = 30,smoothing = CornerSmoothing.Full))
+                    .clip(RoundedCornerShape(10))
                     .clickable {
                         photoPickerLauncher.launch(
                             PickVisualMediaRequest(
@@ -381,7 +392,7 @@ private fun MetadataArt(
         } else {
             Box(
                 modifier = Modifier
-                    .clip(SquircleShape(percent = 30,smoothing = CornerSmoothing.Full))
+                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(10))
                     .background(MaterialTheme.colorScheme.surfaceContainer)
                     .clickable {
                         photoPickerLauncher.launch(

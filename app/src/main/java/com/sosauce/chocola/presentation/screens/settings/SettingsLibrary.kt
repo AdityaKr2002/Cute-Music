@@ -1,6 +1,7 @@
 package com.sosauce.chocola.presentation.screens.settings
 
 import android.content.Intent
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.util.fastMap
+import androidx.core.net.toUri
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberAllSafTracks
 import com.sosauce.chocola.data.datastore.rememberMinTrackDuration
@@ -35,12 +38,16 @@ import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.presentation.navigation.Screen
+import com.sosauce.chocola.presentation.screens.settings.compenents.ClickableSettingsCard
 import com.sosauce.chocola.presentation.screens.settings.compenents.FoldersView
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsWithTitle
 import com.sosauce.chocola.presentation.screens.settings.compenents.SliderSettingsCards
 import com.sosauce.chocola.presentation.shared_components.MusicListItem
 import com.sosauce.chocola.utils.copyMutate
 import com.sosauce.chocola.utils.selfAlignHorizontally
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun SettingsLibrary(
@@ -55,6 +62,7 @@ fun SettingsLibrary(
     val context = LocalContext.current
     var safTracks by rememberAllSafTracks()
     var minTrackDuration by rememberMinTrackDuration()
+    val scope = rememberCoroutineScope()
 
     val safAudioPicker =
         rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris ->
@@ -76,10 +84,37 @@ fun SettingsLibrary(
                 value = minTrackDuration,
                 onValueChange = { minTrackDuration = it },
                 topDp = 24.dp,
-                bottomDp = 24.dp,
+                bottomDp = 4.dp,
                 text = stringResource(R.string.min_track_length_text),
                 unit = "s",
                 optionalDescription = R.string.min_track_duration_desc
+            )
+            ClickableSettingsCard(
+                onClick = {
+                    // TODO move this to unified viewmodel
+                    try {
+                        scope.launch(Dispatchers.IO) {
+                            // https://stackoverflow.com/a/77279718
+                            context.contentResolver.call(
+                                "content://media".toUri(),
+                                "scan_volume",
+                                "external_primary",
+                                null
+                            )
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(context, context.getString(R.string.success), Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        Toast.makeText(context, context.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
+                    }
+
+                },
+                topDp = 4.dp,
+                bottomDp = 24.dp,
+                text = stringResource(R.string.rescan_tracks),
+                optionalDescription = R.string.rescan_tracks_desc
             )
         }
         FoldersView()

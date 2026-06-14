@@ -39,6 +39,7 @@ import com.sosauce.chocola.presentation.screens.artist.ArtistDetailsScreen
 import com.sosauce.chocola.presentation.screens.artist.ArtistDetailsViewModel
 import com.sosauce.chocola.presentation.screens.artist.ArtistsScreen
 import com.sosauce.chocola.presentation.screens.artist.ArtistsViewModel
+import com.sosauce.chocola.presentation.screens.lyrics.LyricsEditorScreen
 import com.sosauce.chocola.presentation.screens.lyrics.LyricsScreen
 import com.sosauce.chocola.presentation.screens.lyrics.LyricsViewModel
 import com.sosauce.chocola.presentation.screens.main.MainScreen
@@ -52,6 +53,7 @@ import com.sosauce.chocola.presentation.screens.playlists.PlaylistViewModel
 import com.sosauce.chocola.presentation.screens.playlists.PlaylistsScreen
 import com.sosauce.chocola.presentation.screens.settings.SettingsScreen
 import com.sosauce.chocola.presentation.screens.setup.SetupScreen
+import com.sosauce.chocola.presentation.screens.transformer.TransformerViewModel
 import com.sosauce.chocola.presentation.shared_components.MusicViewModel
 import com.sosauce.chocola.utils.ImageUtils
 import com.sosauce.chocola.utils.LocalScreen
@@ -115,11 +117,7 @@ fun Nav(onImageLoad: (ImageBitmap?) -> Unit) {
                         )
                     }
 
-                    entry<Screen.Main>(
-                        metadata = NavDisplay.transitionSpec {
-                            slideInVertically(navigationBouncySpec) { it } + fadeIn() togetherWith fadeOut()
-                        }
-                    ) {
+                    entry<Screen.Main> {
 
                         val viewModel = koinViewModel<MainViewModel>()
                         val state by viewModel.state.collectAsStateWithLifecycle()
@@ -133,11 +131,7 @@ fun Nav(onImageLoad: (ImageBitmap?) -> Unit) {
                         )
                     }
 
-                    entry<Screen.Albums>(
-                        metadata = NavDisplay.transitionSpec {
-                            slideInVertically(navigationBouncySpec) { it } + fadeIn() togetherWith fadeOut()
-                        }
-                    ) {
+                    entry<Screen.Albums> {
 
                         val viewModel = koinViewModel<AlbumsViewModel>()
                         val state by viewModel.state.collectAsStateWithLifecycle()
@@ -183,11 +177,7 @@ fun Nav(onImageLoad: (ImageBitmap?) -> Unit) {
                         )
                     }
 
-                    entry<Screen.Artists>(
-                        metadata = NavDisplay.transitionSpec {
-                            slideInVertically(navigationBouncySpec) { it } + fadeIn() togetherWith fadeOut()
-                        }
-                    ) {
+                    entry<Screen.Artists> {
 
                         val viewModel = koinViewModel<ArtistsViewModel>()
                         val state by viewModel.state.collectAsStateWithLifecycle()
@@ -232,17 +222,14 @@ fun Nav(onImageLoad: (ImageBitmap?) -> Unit) {
 
                         MetadataEditor(
                             trackUri = key.trackUri.toUri(),
-                            fileName = key.trackPath.substringAfterLast("/"),
+                            trackPath = key.trackPath,
                             onNavigateUp = backStack::navigateBack,
+                            onNavigate = backStack::navigate,
                             metadataViewModel = metadataViewModel
                         )
                     }
 
-                    entry<Screen.Playlists>(
-                        metadata = NavDisplay.transitionSpec {
-                            slideInVertically(navigationBouncySpec) { it } + fadeIn() togetherWith fadeOut()
-                        }
-                    ) {
+                    entry<Screen.Playlists> {
 
                         val playlistViewModel = koinViewModel<PlaylistViewModel>()
                         val state by playlistViewModel.state.collectAsStateWithLifecycle()
@@ -292,19 +279,38 @@ fun Nav(onImageLoad: (ImageBitmap?) -> Unit) {
                         metadata = NavDisplay.transitionSpec {
                             slideInVertically(navigationBouncySpec) { it } + fadeIn() togetherWith fadeOut()
                         }
-                    ) { key ->
+                    ) {
                         val viewModel = koinViewModel<LyricsViewModel>(
-                            parameters = { parametersOf(key.trackPath) }
+                            parameters = { parametersOf(musicState.track.path) }
                         )
                         val state by viewModel.state.collectAsStateWithLifecycle()
+
+                        LaunchedEffect(musicState.track.path) {
+                            viewModel.parseLyrics(musicState.track.path)
+                        }
+
                         LyricsScreen(
                             onNavigateBack = backStack::navigateBack,
+                            onNavigate = backStack::navigate,
                             state = state,
                             musicState = musicState,
                             onHandlePlayerActions = musicViewModel::handlePlayerActions,
                             onLoadLrcFile = viewModel::loadLrcFile
                         )
                     }
+
+                    entry<Screen.LyricsEditor> { key ->
+                        LyricsEditorScreen(
+                            trackPath = key.trackPath,
+                            onNavigateBack = backStack::navigateBack
+                        )
+                    }
+
+//                    entry<Screen.Transformer> { key ->
+//                        val viewModel = koinViewModel<TransformerViewModel>(
+//                            parameters = { parametersOf(key.trackUri) }
+//                        )
+//                    }
                 }
             )
         }

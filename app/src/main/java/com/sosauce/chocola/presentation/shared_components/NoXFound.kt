@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -47,13 +48,16 @@ fun NoXFound(
         Spacer(Modifier.height(10.dp))
         Text(
             text = stringResource(headlineText),
-            style = MaterialTheme.typography.headlineMediumEmphasized,
-            fontWeight = FontWeight.Black
+            style = MaterialTheme.typography.headlineMediumEmphasized.copy(
+                textAlign = TextAlign.Center
+            )
         )
         Text(
             text = stringResource(bodyText),
-            style = MaterialTheme.typography.bodyMediumEmphasized,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            style = MaterialTheme.typography.bodyMediumEmphasized.copy(
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
+            )
         )
     }
 }

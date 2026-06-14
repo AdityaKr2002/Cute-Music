@@ -69,6 +69,12 @@ fun SettingsScreen(
             onNavigate = { backStack.add(SettingsScreens.NowPlaying) }
         ),
         Item(
+            icon = R.drawable.lyrics_rounded,
+            name = stringResource(R.string.lyrics),
+            description = stringResource(R.string.lyrics_settings_desc),
+            onNavigate = { backStack.add(SettingsScreens.Lyrics) }
+        ),
+        Item(
             icon = R.drawable.headphones,
             name = stringResource(R.string.playback_controls),
             description = stringResource(R.string.playback_controls_desc),
@@ -168,6 +174,10 @@ fun SettingsScreen(
                     SettingsNowPlaying()
                 }
 
+                entry<SettingsScreens.Lyrics> {
+                    SettingsLyrics()
+                }
+
                 entry<SettingsScreens.Playback> {
                     val viewModel = koinViewModel<PlaybackSettingsViewModel>()
                     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -179,6 +189,7 @@ fun SettingsScreen(
 
                 entry<SettingsScreens.Library> {
 
+                    // TODO unified viewmodel
                     val viewModel = koinViewModel<SafViewModel>()
                     val hiddenTracksViewModel = koinViewModel<HiddenTracksViewModel>()
                     val safTracks by viewModel.safTracks.collectAsStateWithLifecycle()
