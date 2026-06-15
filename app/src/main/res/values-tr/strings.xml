@@ -216,4 +216,31 @@
     <string name="load">Manuel ekle</string>
     <string name="not_a_lyric_file">Geçerli bir \"lyrics\" dosyası değil!</string>
     <string name="error_pasting">Panodan yapıştırılırken hata oluştu</string>
+    <string name="lyrics_settings_desc">Şarkı söylemen gibi güzelleştir !</string>
+    <string name="add_lyrics">Şarkı sözü ekle</string>
+    <string name="type_lyrics_here">Şarkı sözlerini yaz</string>
+    <string name="no_lyrics_added_yet">Henüz herhangi bir şarkı sözü eklemedin!</string>
+    <string name="adjust_timestamp">Zamanı ayarla</string>
+    <string name="click_to_add_lyrics">Şarkı sözü eklemek için tıkla</string>
+    <string name="lyrics_editor">Şarkı Sözü Düzenleyici</string>
+    <string name="click_plus_to_start">Artı\'ya basarak ekle!</string>
+    <string name="rescan_tracks">Parçaları tara</string>
+    <string name="rescan_tracks_desc">Bu, Android\'in cihazdaki tüm dosyaları taratmasını sağlar</string>
+    <string name="generic_error">Bir hata oluştu!</string>
+    <plurals name="delete_playlists">
+        <item quantity="one">Çalma listesini sil</item>
+        <item quantity="other">Çalma listelerini sil</item>
+    </plurals>
+    <plurals name="delete_tracks">
+        <item quantity="one">Parçayı sil</item>
+        <item quantity="other">Parçaları sil</item>
+    </plurals>
+    <plurals name="delete_playlists_u_sure">
+        <item quantity="one">%d çalma listesini silmek istediğine emin misin? Bu işlemi geri alamazsın!</item>
+        <item quantity="other">%d çalma listelerini silmek istediğine emin misin? Bu işlemi geri alamazsın!</item>
+    </plurals>
+    <plurals name="delete_tracks_u_sure">
+        <item quantity="one">%d parçasını silmek istediğine emin misin? Bu işlemi geri alamazsın!</item>
+        <item quantity="other">%d parçalarını silmek istediğine emin misin? Bu işlemi geri alamazsın!</item>
+    </plurals>
 </resources>
