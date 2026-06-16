@@ -219,4 +219,38 @@
     <string name="pitch">Pitch</string>
     <string name="cute_searchbar">CuteSearchbar</string>
     <string name="follow_sys">Razem z systemem</string>
+    <string name="lyrics_settings_desc">Zrób go tak pięknym, jak Twój śpiew!</string>
+    <string name="add_lyrics">Dodaj tekst</string>
+    <string name="no_lyrics_added_yet">Nie dodałeś jeszcze tekstu piosenki!</string>
+    <string name="adjust_timestamp">Dostosuj znacznik czasu</string>
+    <string name="click_to_add_lyrics">Kliknij, aby dodać tekst piosenki</string>
+    <string name="lyrics_editor">Edytor tekstów piosenek</string>
+    <string name="click_plus_to_start">Kliknij przycisk plus, aby rozpocząć!</string>
+    <string name="rescan_tracks">Ponowne skanowanie utworów</string>
+    <string name="rescan_tracks_desc">Spowoduje to, że Android ponownie przeskanuje wszystkie pliki na urządzeniu</string>
+    <string name="generic_error">Wystąpił błąd!</string>
+    <plurals name="delete_playlists">
+        <item quantity="one">Usuń listę odtwarzania</item>
+        <item quantity="few">Usuń listy odtwarzania</item>
+        <item quantity="many">Usuń list odtwarzania</item>
+        <item quantity="other">Usuń list odtwarzania</item>
+    </plurals>
+    <plurals name="delete_tracks">
+        <item quantity="one">Usuń utwór</item>
+        <item quantity="few">Usuń utwory</item>
+        <item quantity="many">Usuń utworów</item>
+        <item quantity="other">Usuń utworów</item>
+    </plurals>
+    <plurals name="delete_playlists_u_sure">
+        <item quantity="one">Czy na pewno chcesz usunąć %d listę odtwarzania? Tego nie da się cofnąć!</item>
+        <item quantity="few">Czy na pewno chcesz usunąć %d listy odtwarzania? Tego nie da się cofnąć!</item>
+        <item quantity="many">Czy na pewno chcesz usunąć %d list odtwarzania? Tego nie da się cofnąć!</item>
+        <item quantity="other">Czy na pewno chcesz usunąć %d list odtwarzania? Tego nie da się cofnąć!</item>
+    </plurals>
+    <plurals name="delete_tracks_u_sure">
+        <item quantity="one">Czy na pewno chcesz usunąć %d utwór? Tego nie da się cofnąć!</item>
+        <item quantity="few">Czy na pewno chcesz usunąć %d utwory? Tego nie da się cofnąć!</item>
+        <item quantity="many">Czy na pewno chcesz usunąć %d utworów? Tego nie da się cofnąć!</item>
+        <item quantity="other">Czy na pewno chcesz usunąć %d utworów? Tego nie da się cofnąć!</item>
+    </plurals>
 </resources>
