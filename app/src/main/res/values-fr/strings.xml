@@ -247,4 +247,6 @@
         <item quantity="many">Êtes-vous sûr de vouloir supprimer %d titres ? Cette action est irréversible !</item>
         <item quantity="other">Êtes-vous sûr de vouloir supprimer %d titres ? Cette action est irréversible !</item>
     </plurals>
+    <string name="art_lyrics">Paroles artistiques</string>
+    <string name="art_lyrics_desc">Affiche les paroles directement sur la pochette, plutôt que sur une page distincte. Cliquez sur la pochette pour afficher les paroles.</string>
 </resources>
