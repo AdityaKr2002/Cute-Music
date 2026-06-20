@@ -13,9 +13,13 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import com.sosauce.chocola.data.datastore.rememberAppTheme
+import com.sosauce.chocola.data.models.Album
 import com.sosauce.chocola.presentation.navigation.Nav
+import com.sosauce.chocola.presentation.shared_components.MusicViewModel
 import com.sosauce.chocola.presentation.theme.CuteMusicTheme
 import com.sosauce.chocola.utils.CuteTheme
+import org.koin.androidx.compose.koinViewModel
+import kotlin.system.measureTimeMillis
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,11 +27,11 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         enableEdgeToEdge()
         setContent {
+            val musicViewModel = koinViewModel<MusicViewModel>()
             val theme by rememberAppTheme()
-            var artImageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
             val isSystemInDarkTheme = isSystemInDarkTheme()
 
-            CuteMusicTheme(artImageBitmap = artImageBitmap) {
+            CuteMusicTheme(artImageBitmap = musicViewModel.artworkImageBitmap) {
 
                 WindowCompat
                     .getInsetsController(window, window.decorView)
@@ -39,9 +43,9 @@ class MainActivity : ComponentActivity() {
                         isAppearanceLightStatusBars = isLight
                         isAppearanceLightNavigationBars = isLight
                     }
-                Nav { imageBitmap ->
-                    artImageBitmap = imageBitmap
-                }
+                Nav(
+                    musicViewModel = musicViewModel
+                )
             }
         }
     }

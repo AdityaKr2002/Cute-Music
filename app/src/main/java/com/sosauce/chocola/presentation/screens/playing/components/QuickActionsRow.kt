@@ -65,89 +65,109 @@ fun QuickActionsRow(
         modifier = Modifier.padding(horizontal = 15.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val interactionSources = List(3) { rememberInteractionSource() }
 
         ButtonGroup(
-            horizontalArrangement = Arrangement.spacedBy(2.dp)
+            horizontalArrangement = Arrangement.spacedBy(2.dp),
+            overflowIndicator = {}
         ) {
-            val interactionSources = List(3) { rememberInteractionSource() }
-            val shuffleColor by animateColorAsState(
-                if (musicState.shuffle) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainer
+
+            customItem(
+                buttonGroupContent = {
+
+                    val shuffleColor by animateColorAsState(
+                        if (musicState.shuffle) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainer
+                    )
+                    val shuffleEnd by animateDpAsState(
+                        if (musicState.shuffle) 50.dp else 4.dp
+                    )
+
+                    IconButton(
+                        onClick = { onHandlePlayerActions(PlayerActions.Shuffle) },
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = shuffleColor,
+                            contentColor = contentColorFor(shuffleColor)
+                        ),
+                        interactionSource = interactionSources[0],
+                        shape = RoundedCornerShape(topStart = 50.dp, topEnd = shuffleEnd, bottomStart = 50.dp, bottomEnd = shuffleEnd),
+                        modifier = Modifier
+                            .size(IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
+                            .animateWidth(interactionSources[0])
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.shuffle),
+                            contentDescription = null
+                        )
+                    }
+                },
+                menuContent = {}
             )
 
-            val rateColor by animateColorAsState(
-                if (musicState.speed != 1.0f || musicState.pitch != 1.0f) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainer
+            customItem(
+                buttonGroupContent = {
+
+                    val repeatColor by animateColorAsState(
+                        if (musicState.repeatMode == Player.REPEAT_MODE_ONE || musicState.repeatMode == Player.REPEAT_MODE_ALL) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainer
+                    )
+
+                    val repeatShape by animateDpAsState(
+                        if (musicState.repeatMode == Player.REPEAT_MODE_ONE || musicState.repeatMode == Player.REPEAT_MODE_ALL) 50.dp else 4.dp
+                    )
+
+                    IconButton(
+                        onClick = { onHandlePlayerActions(PlayerActions.ChangeRepeatMode) },
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = repeatColor,
+                            contentColor = contentColorFor(repeatColor)
+                        ),
+                        interactionSource = interactionSources[1],
+                        shape = RoundedCornerShape(repeatShape),
+                        modifier = Modifier
+                            .size(IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
+                            .animateWidth(interactionSources[1])
+                    ) {
+                        val icon = if (musicState.repeatMode == Player.REPEAT_MODE_ONE) R.drawable.repeat_one else R.drawable.repeat
+
+                        Icon(
+                            painter = painterResource(icon),
+                            contentDescription = null
+                        )
+                    }
+                },
+                menuContent = {}
             )
 
-            val repeatColor by animateColorAsState(
-                if (musicState.repeatMode == Player.REPEAT_MODE_ONE || musicState.repeatMode == Player.REPEAT_MODE_ALL) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainer
+            customItem(
+                buttonGroupContent = {
+
+                    val rateColor by animateColorAsState(
+                        if (musicState.speed != 1.0f || musicState.pitch != 1.0f) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainer
+                    )
+
+                    val rateStart by animateDpAsState(
+                        if (musicState.speed != 1.0f || musicState.pitch != 1.0f) 50.dp else 4.dp
+                    )
+
+                    IconButton(
+                        onClick = onShowSpeedCard,
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = rateColor,
+                            contentColor = contentColorFor(rateColor)
+                        ),
+                        interactionSource = interactionSources[2],
+                        shape = RoundedCornerShape(topStart = rateStart, topEnd = 50.dp, bottomStart = rateStart, bottomEnd = 50.dp),
+                        modifier = Modifier
+                            .size(IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
+                            .animateWidth(interactionSources[2])
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.speed_filled),
+                            contentDescription = null
+                        )
+                    }
+                },
+                menuContent = {}
             )
-
-            val repeatShape by animateDpAsState(
-                if (musicState.repeatMode == Player.REPEAT_MODE_ONE || musicState.repeatMode == Player.REPEAT_MODE_ALL) 50.dp else 4.dp
-            )
-
-            val shuffleEnd by animateDpAsState(
-                if (musicState.shuffle) 50.dp else 4.dp
-            )
-
-            val rateStart by animateDpAsState(
-                if (musicState.speed != 1.0f || musicState.pitch != 1.0f) 50.dp else 4.dp
-            )
-
-
-            IconButton(
-                onClick = { onHandlePlayerActions(PlayerActions.Shuffle) },
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = shuffleColor,
-                    contentColor = contentColorFor(shuffleColor)
-                ),
-                interactionSource = interactionSources[0],
-                shape = RoundedCornerShape(topStart = 50.dp, topEnd = shuffleEnd, bottomStart = 50.dp, bottomEnd = shuffleEnd),
-                modifier = Modifier
-                    .size(IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
-                    .animateWidth(interactionSources[0])
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.shuffle),
-                    contentDescription = null
-                )
-            }
-            IconButton(
-                onClick = { onHandlePlayerActions(PlayerActions.ChangeRepeatMode) },
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = repeatColor,
-                    contentColor = contentColorFor(repeatColor)
-                ),
-                interactionSource = interactionSources[1],
-                shape = RoundedCornerShape(repeatShape),
-                modifier = Modifier
-                    .size(IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
-                    .animateWidth(interactionSources[1])
-            ) {
-                val icon = if (musicState.repeatMode == Player.REPEAT_MODE_ONE) R.drawable.repeat_one else R.drawable.repeat
-
-                Icon(
-                    painter = painterResource(icon),
-                    contentDescription = null
-                )
-            }
-            IconButton(
-                onClick = onShowSpeedCard,
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = rateColor,
-                    contentColor = contentColorFor(rateColor)
-                ),
-                interactionSource = interactionSources[2],
-                shape = RoundedCornerShape(topStart = rateStart, topEnd = 50.dp, bottomStart = rateStart, bottomEnd = 50.dp),
-                modifier = Modifier
-                    .size(IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
-                    .animateWidth(interactionSources[2])
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.speed_filled),
-                    contentDescription = null
-                )
-            }
         }
 
         Spacer(Modifier.weight(1f))

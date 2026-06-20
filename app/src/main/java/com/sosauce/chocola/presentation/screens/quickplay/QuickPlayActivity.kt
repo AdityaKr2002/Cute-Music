@@ -164,78 +164,97 @@ class QuickPlayActivity : ComponentActivity() {
                                 onHandlePlayerActions = viewModel::handlePlayerAction
                             )
                             Spacer(Modifier.height(10.dp))
-                            ButtonGroup {
-                                FilledIconButton(
-                                    onClick = {
-                                        viewModel.handlePlayerAction(
-                                            PlayerActions.RewindTo(5000)
-                                        )
-                                    },
-                                    shapes = IconButtonDefaults.shapes(),
-                                    interactionSource = interactionSources[1],
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .size(
-                                            IconButtonDefaults.mediumContainerSize(
-                                                IconButtonDefaults.IconButtonWidthOption.Wide
+                            ButtonGroup(
+                                overflowIndicator = {}
+                            ) {
+                                customItem(
+                                    buttonGroupContent = {
+                                        FilledIconButton(
+                                            onClick = {
+                                                viewModel.handlePlayerAction(
+                                                    PlayerActions.RewindTo(5000)
+                                                )
+                                            },
+                                            shapes = IconButtonDefaults.shapes(),
+                                            interactionSource = interactionSources[1],
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .size(
+                                                    IconButtonDefaults.mediumContainerSize(
+                                                        IconButtonDefaults.IconButtonWidthOption.Wide
+                                                    )
+                                                )
+                                                .animateWidth(interactionSource = interactionSources[1])
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(R.drawable.fast_rewind),
+                                                contentDescription = stringResource(androidx.media3.session.R.string.media3_controls_seek_forward_description)
                                             )
-                                        )
-                                        .animateWidth(interactionSource = interactionSources[1])
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.fast_rewind),
-                                        contentDescription = stringResource(androidx.media3.session.R.string.media3_controls_seek_forward_description)
-                                    )
-                                }
-                                FilledIconToggleButton(
-                                    checked = state.isPlaying,
-                                    onCheckedChange = {
-                                        viewModel.handlePlayerAction(
-                                            PlayerActions.PlayOrPause
-                                        )
+                                        }
                                     },
-                                    shapes = IconButtonDefaults.toggleableShapes(),
-                                    interactionSource = interactionSources[2],
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .size(
-                                            IconButtonDefaults.mediumContainerSize(
-                                                IconButtonDefaults.IconButtonWidthOption.Wide
+                                    menuContent = {}
+                                )
+
+                                customItem(
+                                    buttonGroupContent = {
+                                        FilledIconToggleButton(
+                                            checked = state.isPlaying,
+                                            onCheckedChange = {
+                                                viewModel.handlePlayerAction(
+                                                    PlayerActions.PlayOrPause
+                                                )
+                                            },
+                                            shapes = IconButtonDefaults.toggleableShapes(),
+                                            interactionSource = interactionSources[2],
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .size(
+                                                    IconButtonDefaults.mediumContainerSize(
+                                                        IconButtonDefaults.IconButtonWidthOption.Wide
+                                                    )
+                                                )
+                                                .animateWidth(interactionSource = interactionSources[2])
+                                        ) {
+                                            Icon(
+                                                painter = if (state.isPlaying) painterResource(R.drawable.widget_pause) else painterResource(
+                                                    R.drawable.widget_play
+                                                ),
+                                                contentDescription = if (state.isPlaying) stringResource(
+                                                    androidx.media3.session.R.string.media3_controls_pause_description
+                                                ) else stringResource(androidx.media3.session.R.string.media3_controls_play_description),
                                             )
-                                        )
-                                        .animateWidth(interactionSource = interactionSources[2])
-                                ) {
-                                    Icon(
-                                        painter = if (state.isPlaying) painterResource(R.drawable.widget_pause) else painterResource(
-                                            R.drawable.widget_play
-                                        ),
-                                        contentDescription = if (state.isPlaying) stringResource(
-                                            androidx.media3.session.R.string.media3_controls_pause_description
-                                        ) else stringResource(androidx.media3.session.R.string.media3_controls_play_description),
-                                    )
-                                }
-                                FilledIconButton(
-                                    onClick = {
-                                        viewModel.handlePlayerAction(
-                                            PlayerActions.SeekTo(5000)
-                                        )
+                                        }
                                     },
-                                    shapes = IconButtonDefaults.shapes(),
-                                    interactionSource = interactionSources[3],
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .size(
-                                            IconButtonDefaults.mediumContainerSize(
-                                                IconButtonDefaults.IconButtonWidthOption.Narrow
+                                    menuContent = {}
+                                )
+
+                                customItem(
+                                    buttonGroupContent = {
+                                        FilledIconButton(
+                                            onClick = {
+                                                viewModel.handlePlayerAction(
+                                                    PlayerActions.SeekTo(5000)
+                                                )
+                                            },
+                                            shapes = IconButtonDefaults.shapes(),
+                                            interactionSource = interactionSources[3],
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .size(
+                                                    IconButtonDefaults.mediumContainerSize(
+                                                        IconButtonDefaults.IconButtonWidthOption.Narrow
+                                                    )
+                                                )
+                                                .animateWidth(interactionSource = interactionSources[3])
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(R.drawable.fast_forward),
+                                                contentDescription = stringResource(androidx.media3.session.R.string.media3_controls_seek_forward_description)
                                             )
-                                        )
-                                        .animateWidth(interactionSource = interactionSources[3])
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.fast_forward),
-                                        contentDescription = stringResource(androidx.media3.session.R.string.media3_controls_seek_forward_description)
-                                    )
-                                }
+                                        }
+                                    },
+                                    menuContent = {}
+                                )
                             }
                             Spacer(Modifier.weight(1f))
                             ToggleButton(

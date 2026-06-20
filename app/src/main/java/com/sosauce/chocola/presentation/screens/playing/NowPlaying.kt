@@ -7,6 +7,7 @@ package com.sosauce.chocola.presentation.screens.playing
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -36,7 +37,9 @@ import com.sosauce.chocola.data.datastore.rememberIsLandscape
 import com.sosauce.chocola.data.datastore.rememberSnapSpeedAndPitch
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
+import com.sosauce.chocola.domain.model.Lyrics
 import com.sosauce.chocola.presentation.navigation.Screen
+import com.sosauce.chocola.presentation.screens.lyrics.LyricsList
 import com.sosauce.chocola.presentation.screens.playing.components.ActionButtonsRow
 import com.sosauce.chocola.presentation.screens.playing.components.Artwork
 import com.sosauce.chocola.presentation.screens.playing.components.CuteSlider
@@ -83,7 +86,6 @@ private fun NowPlayingContent(
     onNavigate: (Screen) -> Unit,
     onShrinkToSearchbar: () -> Unit
 ) {
-    val context = LocalContext.current
     var snap by rememberSnapSpeedAndPitch()
     var showSpeedCard by remember { mutableStateOf(false) }
     var showPlaylistDialog by remember { mutableStateOf(false) }

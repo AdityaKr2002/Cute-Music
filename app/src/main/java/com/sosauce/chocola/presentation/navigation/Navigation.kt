@@ -41,7 +41,6 @@ import com.sosauce.chocola.presentation.screens.artist.ArtistsScreen
 import com.sosauce.chocola.presentation.screens.artist.ArtistsViewModel
 import com.sosauce.chocola.presentation.screens.lyrics.LyricsEditorScreen
 import com.sosauce.chocola.presentation.screens.lyrics.LyricsScreen
-import com.sosauce.chocola.presentation.screens.lyrics.LyricsViewModel
 import com.sosauce.chocola.presentation.screens.main.MainScreen
 import com.sosauce.chocola.presentation.screens.main.MainViewModel
 import com.sosauce.chocola.presentation.screens.metadata.MetadataEditor
@@ -65,7 +64,9 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
-fun Nav(onImageLoad: (ImageBitmap?) -> Unit) {
+fun Nav(
+    musicViewModel: MusicViewModel
+) {
 
     val context = LocalContext.current
     val startScreen = if (context.hasMusicPermission()) Screen.Main else Screen.Setup
@@ -73,16 +74,8 @@ fun Nav(onImageLoad: (ImageBitmap?) -> Unit) {
     val currentScreen by remember {
         derivedStateOf { backStack.lastOrNull() ?: Screen.Main }
     }
-    val musicViewModel = koinViewModel<MusicViewModel>()
     val musicState by musicViewModel.musicState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(musicState.track.artUri) {
-        ImageUtils.loadNewArt(
-            context = context,
-            onImageLoad = onImageLoad,
-            art = musicState.track.artUri
-        )
-    }
     SharedTransitionLayout {
         CompositionLocalProvider(
             LocalSharedTransitionScope provides this,
@@ -280,22 +273,11 @@ fun Nav(onImageLoad: (ImageBitmap?) -> Unit) {
                             slideInVertically(navigationBouncySpec) { it } + fadeIn() togetherWith fadeOut()
                         }
                     ) {
-                        val viewModel = koinViewModel<LyricsViewModel>(
-                            parameters = { parametersOf(musicState.track.path) }
-                        )
-                        val state by viewModel.state.collectAsStateWithLifecycle()
-
-                        LaunchedEffect(musicState.track.path) {
-                            viewModel.parseLyrics(musicState.track.path)
-                        }
-
                         LyricsScreen(
                             onNavigateBack = backStack::navigateBack,
                             onNavigate = backStack::navigate,
-                            state = state,
                             musicState = musicState,
-                            onHandlePlayerActions = musicViewModel::handlePlayerActions,
-                            onLoadLrcFile = viewModel::loadLrcFile
+                            onHandlePlayerActions = musicViewModel::handlePlayerActions
                         )
                     }
 

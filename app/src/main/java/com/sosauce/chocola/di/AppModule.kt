@@ -16,7 +16,6 @@ import com.sosauce.chocola.presentation.screens.album.AlbumsViewModel
 import com.sosauce.chocola.presentation.screens.artist.ArtistDetailsViewModel
 import com.sosauce.chocola.presentation.screens.artist.ArtistsViewModel
 import com.sosauce.chocola.presentation.screens.lyrics.LyricsEditorViewModel
-import com.sosauce.chocola.presentation.screens.lyrics.LyricsViewModel
 import com.sosauce.chocola.presentation.screens.main.MainViewModel
 import com.sosauce.chocola.presentation.screens.metadata.MetadataViewModel
 import com.sosauce.chocola.presentation.screens.playlists.PlaylistDetailsViewModel
@@ -69,7 +68,6 @@ val appModule = module {
     viewModelOf(::MainViewModel)
     viewModelOf(::FoldersViewModel)
     viewModelOf(::SafViewModel)
-    viewModelOf(::LyricsViewModel)
     viewModelOf(::HiddenTracksViewModel)
     viewModelOf(::PlaybackSettingsViewModel)
     viewModelOf(::TransformerViewModel)

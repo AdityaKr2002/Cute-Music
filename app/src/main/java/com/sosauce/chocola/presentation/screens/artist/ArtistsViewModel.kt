@@ -19,6 +19,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.system.measureTimeMillis
+import kotlin.time.Duration.Companion.milliseconds
 
 class ArtistsViewModel(
     private val artistsRepository: ArtistsRepository,
@@ -26,13 +28,18 @@ class ArtistsViewModel(
 ) : ViewModel() {
 
     val textFieldState = TextFieldState()
-    private val userQuery = snapshotFlow { textFieldState.text }.debounce(250)
+    private val userQuery = snapshotFlow { textFieldState.text }.debounce(250.milliseconds)
     private val _state = MutableStateFlow(ArtistsState(isLoading = true))
     val state = _state.asStateFlow()
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
 
+            measureTimeMillis {
+                artistsRepository.fetchArtists()
+            }.also {
+                println("Time for artists: ${it}ms")
+            }
             val artists = artistsRepository.fetchArtists()
 
             combine(
@@ -52,6 +59,7 @@ class ArtistsViewModel(
 
             }.collectLatest { newState -> _state.update { newState } }
         }
+
     }
 
 }

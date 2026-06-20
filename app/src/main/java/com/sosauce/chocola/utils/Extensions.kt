@@ -11,6 +11,8 @@ import android.database.ContentObserver
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.text.format.DateFormat
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.SizeTransform
@@ -110,6 +112,29 @@ fun Player.playRandom() {
 
 fun Player.playOrPause() {
     if (isPlaying) pause() else play()
+}
+
+fun Player.pauseWithFadeOut(durationMs: Long = 1000, steps: Int = 10) {
+    val handler = Handler(Looper.getMainLooper())
+    val interval = durationMs / steps
+    val volumeStep = 1.0f / steps
+    var currentVolume = 1.0f
+
+    val fadeRunnable = object : Runnable {
+        override fun run() {
+            currentVolume -= volumeStep
+            if (currentVolume <= 0f) {
+                volume = 0f
+                pause()
+                volume = 1.0f
+            } else {
+                volume = currentVolume
+                handler.postDelayed(this, interval)
+            }
+        }
+    }
+
+    handler.post(fadeRunnable)
 }
 
 fun Player.changeRepeatMode(

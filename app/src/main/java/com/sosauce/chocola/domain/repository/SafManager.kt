@@ -40,7 +40,7 @@ class SafManager(
 
             val title = metadata?.propertyMap?.get("TITLE")?.getOrNull(0) ?: "<unknown>"
             val artist = metadata?.propertyMap?.get("ARTIST")?.joinToString(", ") ?: "<unknown>"
-            val album = metadata?.propertyMap?.get("ALBUM")?.getOrNull(0)
+            val album = metadata?.propertyMap?.get("ALBUM")?.getOrNull(0) ?: "<unknown>"
             val duration = metadata?.propertyMap?.get("DURATION")?.getOrNull(0)
             val artUri =
                 TagLib.getFrontCover(fd.dup().detachFd())?.data?.getUriFromByteArray(context)
@@ -51,7 +51,7 @@ class SafManager(
                 artUri = artUri ?: Uri.EMPTY,
                 title = title,
                 artist = artist,
-                album = album ?: context.getString(R.string.unknown),
+                album = album,
                 albumId = 0,
                 artistId = 0,
                 durationMs = duration?.toLong() ?: 0,

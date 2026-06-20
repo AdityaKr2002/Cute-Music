@@ -3,6 +3,7 @@ package com.sosauce.chocola.data.states
 import androidx.compose.runtime.Stable
 import androidx.media3.common.Player
 import com.sosauce.chocola.data.models.CuteTrack
+import com.sosauce.chocola.domain.model.Lyrics
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -23,5 +24,6 @@ data class MusicState(
     val bitrate: Int = 0,
     val sampleRate: Int = 0,
     val channelCount: Int = 0,
-    val segment: Pair<Long, Long>? = null
+    val segment: Pair<Long, Long>? = null,
+    val lyrics: List<Lyrics> = emptyList()
 )

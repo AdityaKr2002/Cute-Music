@@ -8,7 +8,13 @@ import android.content.ComponentName
 import android.content.Context
 import android.database.ContentObserver
 import android.media.AudioManager
+import android.net.Uri
 import android.os.CountDownTimer
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.util.fastFilter
 import androidx.compose.ui.util.fastFirstOrNull
 import androidx.compose.ui.util.fastMap
@@ -23,7 +29,12 @@ import androidx.media3.common.Timeline
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
+import coil3.imageLoader
+import coil3.request.ImageRequest
+import coil3.request.allowHardware
+import coil3.toBitmap
 import com.google.common.util.concurrent.MoreExecutors
+import com.sosauce.chocola.data.LyricsParser
 import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.data.states.MusicState
@@ -34,6 +45,7 @@ import com.sosauce.chocola.utils.applyPlaybackSpeed
 import com.sosauce.chocola.utils.applyShuffle
 import com.sosauce.chocola.utils.changeRepeatMode
 import com.sosauce.chocola.utils.copyMutate
+import com.sosauce.chocola.utils.pauseWithFadeOut
 import com.sosauce.chocola.utils.playOrPause
 import com.sosauce.chocola.utils.playRandom
 import kotlinx.coroutines.Dispatchers
@@ -48,16 +60,22 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 class MusicViewModel(
     private val application: Application,
-    private val userPreferences: UserPreferences
+    private val userPreferences: UserPreferences,
+    private val lyricsParser: LyricsParser
 ) : AndroidViewModel(application) {
 
     private var mediaController: MediaController? = null
     private val _musicState = MutableStateFlow(MusicState())
     val musicState = _musicState.asStateFlow()
+
+    var artworkImageBitmap by mutableStateOf<ImageBitmap?>(null)
+        private set
 
     var sleepCountdownTimer: CountDownTimer? = null
     private val playerListener =
@@ -72,14 +90,15 @@ class MusicViewModel(
                 musicState.value.loadedMedias.fastFirstOrNull { track ->
                     track.mediaId == mediaItem.mediaId
                 }?.also { track ->
-
-
                     _musicState.update {
                         it.copy(
                             track = track,
                             mediaIndex = mediaController!!.currentMediaItemIndex
                         )
                     }
+                    loadNewArt(track.artUri)
+                    parseLyrics(track.path)
+
                 }
             }
 
@@ -179,12 +198,33 @@ class MusicViewModel(
                                 position = player.currentPosition
                             )
                         }
-                        //if (player.currentPosition >= 5000L) player.seekTo(0)
-                        delay(500)
+                        delay(500.milliseconds)
                     }
                 }
             }
         }
+
+    private fun loadNewArt(art: Uri?) {
+        viewModelScope.launch {
+            val request = ImageRequest.Builder(application)
+                .data(art)
+                .allowHardware(false)
+                .build()
+            val result = application.imageLoader.execute(request)
+
+            artworkImageBitmap = result.image?.toBitmap()?.asImageBitmap()
+        }
+    }
+
+    private fun parseLyrics(trackPath: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _musicState.update {
+                it.copy(
+                    lyrics = lyricsParser.parseLyrics(trackPath)
+                )
+            }
+        }
+    }
 
     init {
         MediaController
@@ -220,7 +260,6 @@ class MusicViewModel(
     }
 
 
-    // I'm not a big fan of allat, but it works
     private fun loadPlaybackPreferences() {
         viewModelScope.launch {
 
@@ -361,7 +400,7 @@ class MusicViewModel(
                     }
 
                     override fun onFinish() {
-                        mediaController!!.pause()
+                        mediaController!!.pauseWithFadeOut()
                         cancel()
                         sleepCountdownTimer = null
                         _musicState.update {
@@ -417,6 +456,14 @@ class MusicViewModel(
                     mediaController?.addMediaItems(
                         newUniqueTracks.fastMap { it.mediaItem }
                     )
+                }
+            }
+            is PlayerActions.LoadLyrics -> {
+                viewModelScope.launch {
+                    val lyrics = lyricsParser.parseLyrics(action.uri.path ?: return@launch)
+                    _musicState.update {
+                        it.copy(lyrics = lyrics)
+                    }
                 }
             }
         }

@@ -130,42 +130,54 @@ fun MoreOptionsButton(
 
     ButtonGroup(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(2.dp)
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+        overflowIndicator = {}
     ) {
-        IconButton(
-            onClick = { onNavigate(Screen.Lyrics) },
-            shape = RoundedCornerShape(topStart = 50.dp, bottomStart = 50.dp, topEnd = 4.dp, bottomEnd = 4.dp),
-            colors = IconButtonDefaults.filledIconButtonColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
-            ),
-            interactionSource = interactionSources[0],
-            modifier = Modifier
-                .size(IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
-                .animateWidth(interactionSources[0])
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.lyrics_filled),
-                contentDescription = null
-            )
-        }
-        IconButton(
-            onClick = { onNavigate(Screen.Queue) },
-            shape = RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp, topEnd = 50.dp, bottomEnd = 50.dp),
-            colors = IconButtonDefaults.filledIconButtonColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
-            ),
-            interactionSource = interactionSources[1],
-            modifier = Modifier
-                .size(IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
-                .animateWidth(interactionSources[1])
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.queue),
-                contentDescription = null
-            )
-        }
+        customItem(
+            buttonGroupContent = {
+                IconButton(
+                    onClick = { onNavigate(Screen.Lyrics) },
+                    shape = RoundedCornerShape(topStart = 50.dp, bottomStart = 50.dp, topEnd = 4.dp, bottomEnd = 4.dp),
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
+                    ),
+                    interactionSource = interactionSources[0],
+                    modifier = Modifier
+                        .size(IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
+                        .animateWidth(interactionSources[0])
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.lyrics_filled),
+                        contentDescription = null
+                    )
+                }
+            },
+            menuContent = {}
+        )
+
+        customItem(
+            buttonGroupContent = {
+                IconButton(
+                    onClick = { onNavigate(Screen.Queue) },
+                    shape = RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp, topEnd = 50.dp, bottomEnd = 50.dp),
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
+                    ),
+                    interactionSource = interactionSources[1],
+                    modifier = Modifier
+                        .size(IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
+                        .animateWidth(interactionSources[1])
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.queue),
+                        contentDescription = null
+                    )
+                }
+            },
+            menuContent = {}
+        )
     }
 
 }

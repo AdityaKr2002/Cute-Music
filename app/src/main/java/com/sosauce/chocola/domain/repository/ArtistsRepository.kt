@@ -27,12 +27,14 @@ class ArtistsRepository(
     suspend fun fetchArtists(): List<Artist> = withContext(Dispatchers.IO) {
 
         val artists = mutableListOf<Artist>()
+        //val allAlbumsIds = getAllArtistAlbumIds()
+
 
         val projection = arrayOf(
             MediaStore.Audio.Artists._ID,
             MediaStore.Audio.Artists.ARTIST,
             MediaStore.Audio.Artists.NUMBER_OF_ALBUMS,
-            MediaStore.Audio.Artists.NUMBER_OF_TRACKS
+            MediaStore.Audio.Artists.NUMBER_OF_TRACKS,
         )
 
         context.contentResolver.query(
@@ -61,7 +63,7 @@ class ArtistsRepository(
                 val artistInfo = Artist(
                     id = id,
                     name = artist,
-                    albumId = getArtistAlbumId(id),
+                    //albumId = allAlbumsIds[id] ?: 0,
                     numberTracks = numberTracks,
                     numberAlbums = numberAlbums
 
@@ -74,6 +76,8 @@ class ArtistsRepository(
     }
 
     fun fetchArtistDetails(artistName: String): Artist {
+
+
         context.contentResolver.query(
             MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
             arrayOf(
@@ -132,6 +136,36 @@ class ArtistsRepository(
         }
 
         return 0
+    }
+
+    private fun getAllArtistAlbumIds(): HashMap<Long, Long> {
+        val uri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI
+        val artistToAlbumId = hashMapOf<Long, Long>()
+
+        context.contentResolver.query(
+            uri,
+            arrayOf(
+                MediaStore.Audio.Albums.ALBUM_ID,
+                MediaStore.Audio.Albums.ARTIST_ID
+            ),
+            null,
+            null,
+            null
+        )?.use { cursor ->
+            val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Albums.ALBUM_ID)
+            val artistColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Albums.ARTIST_ID)
+
+            while (cursor.moveToNext()) {
+                val artist = cursor.getLong(artistColumn)
+                val albumId = cursor.getLong(idColumn)
+
+                if (!artistToAlbumId.containsKey(artist)) {
+                    artistToAlbumId[artist] = albumId
+                }
+            }
+        }
+
+        return artistToAlbumId
     }
 
 }

@@ -513,50 +513,55 @@ private fun SharedTransitionScope.ScreenSelection(
         )
     )
     ButtonGroup(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        overflowIndicator = {}
     ) {
         screens.fastForEachIndexed { index, item ->
 
             val isActive = currentScreen == item.screen
 
-            val containerColor = if (isActive) MaterialTheme.colorScheme.primary else Color.Transparent
+            customItem(
+                buttonGroupContent = {
 
-            Button(
-                onClick = {
-                    item.onClick()
-                    dismiss()
-                },
-                interactionSource = interactionsSources[index],
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = containerColor,
-                    contentColor = contentColorFor(containerColor)
-                ),
-                shapes = ButtonDefaults.shapes(),
-                modifier = Modifier
-                    .defaultMinSize(
-                        minWidth = TextFieldDefaults.MinWidth,
-                        minHeight = TextFieldDefaults.MinHeight,
-                    )
-                    .weight(1f)
-                    .animateWidth(interactionsSources[index])
-                    .then(
-                        if (isActive) {
-                            Modifier.sharedElement(
-                                sharedContentState = key,
-                                animatedVisibilityScope = animatedVisibilityScope,
+                    val containerColor = if (isActive) MaterialTheme.colorScheme.primary else Color.Transparent
+
+                    Button(
+                        onClick = {
+                            item.onClick()
+                            dismiss()
+                        },
+                        interactionSource = interactionsSources[index],
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = containerColor,
+                            contentColor = contentColorFor(containerColor)
+                        ),
+                        shapes = ButtonDefaults.shapes(),
+                        modifier = Modifier
+                            .defaultMinSize(
+                                minWidth = TextFieldDefaults.MinWidth,
+                                minHeight = TextFieldDefaults.MinHeight,
                             )
-                        } else Modifier
-                    )
-            ) {
-                val icon =
-                    if (isActive) item.selectedIcon else item.unselectedIcon
+                            .weight(1f)
+                            .animateWidth(interactionsSources[index])
+                            .then(
+                                if (isActive) {
+                                    Modifier.sharedElement(
+                                        sharedContentState = key,
+                                        animatedVisibilityScope = animatedVisibilityScope,
+                                    )
+                                } else Modifier
+                            )
+                    ) {
+                        val icon = if (isActive) item.selectedIcon else item.unselectedIcon
 
-                Icon(
-                    painter = painterResource(icon),
-                    contentDescription = null
-                )
-            }
+                        Icon(
+                            painter = painterResource(icon),
+                            contentDescription = null
+                        )
+                    }
+                },
+                menuContent = {}
+            )
         }
     }
 }

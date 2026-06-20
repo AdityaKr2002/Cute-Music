@@ -13,6 +13,7 @@ import com.sosauce.chocola.data.datastore.PreferencesKeys.ALBUM_SORT
 import com.sosauce.chocola.data.datastore.PreferencesKeys.ARTIST_SORT
 import com.sosauce.chocola.data.datastore.PreferencesKeys.ARTWORK_SHAPE
 import com.sosauce.chocola.data.datastore.PreferencesKeys.ART_AS_BACKGROUND
+import com.sosauce.chocola.data.datastore.PreferencesKeys.ART_LYRICS
 import com.sosauce.chocola.data.datastore.PreferencesKeys.CAROUSEL
 import com.sosauce.chocola.data.datastore.PreferencesKeys.CENTER_TITLE
 import com.sosauce.chocola.data.datastore.PreferencesKeys.EQUALIZER_ENABLED
@@ -98,7 +99,7 @@ data object PreferencesKeys {
     val THUMB_STYLE = stringPreferencesKey("THUMB_STYLE")
     val TRACK_STYLE = stringPreferencesKey("TRACK_STYLE")
     val EQUALIZER_PRESETS = stringPreferencesKey("EQUALIZER_PRESETS")
-
+    val ART_LYRICS = booleanPreferencesKey("ART_LYRICS")
 }
 
 
@@ -242,6 +243,10 @@ fun rememberTrackStyle() =
 @Composable
 fun rememberEnableEqualizer() =
     rememberPreference(key = EQUALIZER_ENABLED, defaultValue = false)
+
+@Composable
+fun rememberArtLyrics() =
+    rememberPreference(key = ART_LYRICS, defaultValue = false)
 //
 //suspend fun getPauseOnMute(context: Context) =
 //    getPreference(key = PAUSE_ON_MUTE, defaultValue = false, context = context)

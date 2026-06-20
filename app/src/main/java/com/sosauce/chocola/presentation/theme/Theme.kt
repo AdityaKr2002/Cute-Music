@@ -64,16 +64,14 @@ fun CuteMusicTheme(
     DynamicMaterialExpressiveTheme(
         state = state,
         motionScheme = MotionScheme.expressive(),
-        animate = false,
+        animate = true,
         typography = if (useSystemFont) MaterialTheme.typography else NunitoTypography,
         content = content
     )
 }
 
 val nunitoFontFamily = FontFamily(
-    Font(R.font.nunito_black, FontWeight.Black, FontStyle.Normal),
-    Font(R.font.nunito_bold, FontWeight.Bold, FontStyle.Normal),
-    Font(R.font.nunito_extrabold, FontWeight.ExtraBold, FontStyle.Normal),
+    Font(R.font.nunito_extrabold, FontWeight.ExtraBold, FontStyle.Normal)
 )
 
 val NunitoTypography = Typography().run {

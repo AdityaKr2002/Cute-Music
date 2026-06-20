@@ -1,5 +1,6 @@
 package com.sosauce.chocola.domain.actions
 
+import android.net.Uri
 import com.sosauce.chocola.data.models.CuteTrack
 
 sealed interface PlayerActions {
@@ -45,5 +46,9 @@ sealed interface PlayerActions {
 
     data class AddToQueue(
         val cuteTracks: List<CuteTrack>
+    ) : PlayerActions
+
+    data class LoadLyrics(
+        val uri: Uri
     ) : PlayerActions
 }

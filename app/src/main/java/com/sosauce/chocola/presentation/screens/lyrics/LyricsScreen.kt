@@ -82,236 +82,54 @@ import kotlinx.coroutines.launch
 fun LyricsScreen(
     onNavigateBack: () -> Unit,
     onNavigate: (Screen) -> Unit,
-    state: LyricsState,
     musicState: MusicState,
-    onHandlePlayerActions: (PlayerActions) -> Unit,
-    onLoadLrcFile: (Uri) -> Unit
+    onHandlePlayerActions: (PlayerActions) -> Unit
 ) {
-    val activity = LocalActivity.current
-    val resources = LocalResources.current
-    val context = LocalContext.current
-    val clipboardManager = LocalClipboard.current
-
-    if (state.isLoading) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            ContainedLoadingIndicator()
-        }
-    } else {
-        val scope = rememberCoroutineScope()
-        val lyricsAlignment by rememberLyricsAlignment()
-        val lyricsFontSize by rememberLyricsFontSize()
-        val currentLyricIndex by remember(musicState.position) {
-            derivedStateOf {
-                state.lyrics.indexOfLast { musicState.position >= it.timestamp }
-            }
-        }
-        val lazyListState = rememberLazyListState(
-            initialFirstVisibleItemIndex = if (currentLyricIndex!= -1) currentLyricIndex else 0
-        )
-
-        val lyricFilePicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-
-            if (uri == null) return@rememberLauncherForActivityResult
-
-            if (!uri.toString().endsWith(".lrc")) {
-                Toast.makeText(
-                    context,
-                    resources.getString(R.string.not_a_lyric_file),
-                    Toast.LENGTH_LONG
-                ).show()
-            } else {
-                onLoadLrcFile(uri)
-            }
-        }
-
-        DisposableEffect(Unit) {
-            val window = activity?.window
-
-            window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            onDispose {
-                window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }
-        }
-
-        LaunchedEffect(currentLyricIndex) {
-            if (currentLyricIndex != -1) {
-                lazyListState.animateScrollToItem(currentLyricIndex)
-            }
-        }
-
-        Scaffold(
-            bottomBar = {
-                HorizontalFloatingToolbar(
-                    expanded = true,
-                    colors = FloatingToolbarDefaults.vibrantFloatingToolbarColors(),
-                    modifier = Modifier
-                        .selfAlignHorizontally()
-                        .navigationBarsPadding(),
-                    floatingActionButton = {
-                        AnimatedFab(
-                            onClick = onNavigateBack,
-                            icon = R.drawable.close,
-                            containerColor = vibrantFloatingToolbarColors().fabContainerColor
-                        )
-                    }
-                ) {
-                    AnimatedIconButton(
-                        onClick = { onHandlePlayerActions(PlayerActions.SeekToPreviousMusic) },
-                        icon = R.drawable.skip_previous,
-                        contentDescription = stringResource(androidx.media3.session.R.string.media3_controls_seek_back_description)
-                    )
-                    PlayPauseButton(
-                        isPlaying = musicState.isPlaying,
-                        onHandlePlayerActions = onHandlePlayerActions
-                    )
-                    AnimatedIconButton(
-                        onClick = { onHandlePlayerActions(PlayerActions.SeekToNextMusic) },
-                        icon = R.drawable.skip_next,
-                        contentDescription = stringResource(androidx.media3.session.R.string.media3_controls_seek_to_next_description)
+    Scaffold(
+        bottomBar = {
+            HorizontalFloatingToolbar(
+                expanded = true,
+                colors = FloatingToolbarDefaults.vibrantFloatingToolbarColors(),
+                modifier = Modifier
+                    .selfAlignHorizontally()
+                    .navigationBarsPadding(),
+                floatingActionButton = {
+                    AnimatedFab(
+                        onClick = onNavigateBack,
+                        icon = R.drawable.close,
+                        containerColor = vibrantFloatingToolbarColors().fabContainerColor
                     )
                 }
-            }
-        ) { paddingValues ->
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                state = lazyListState,
-                contentPadding = paddingValues
             ) {
-                if (state.lyrics.isEmpty()) {
-                    item {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(horizontal = 15.dp)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.no_lyrics_note),
-                                style = MaterialTheme.typography.headlineSmallEmphasized.copy(
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                            )
-                            Spacer(Modifier.height(10.dp))
-
-                            Button(
-                                onClick = {
-                                    val query =
-                                        "${musicState.track.title} ${musicState.track.artist} lyrics"
-                                    val intent = Intent(Intent.ACTION_WEB_SEARCH).apply {
-                                        putExtra(SearchManager.QUERY, query)
-                                    }
-                                    context.startActivity(intent)
-                                },
-                                shapes = ButtonDefaults.shapes(),
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.search),
-                                    contentDescription = null
-                                )
-                                Spacer(Modifier.width(ICON_TEXT_SPACING.dp))
-                                Text(
-                                    text = stringResource(R.string.search),
-                                    maxLines = 1
-                                )
-                            }
-                            Button(
-                                onClick = { onNavigate(Screen.MetadataEditor(musicState.track.path, musicState.track.uri.toString())) },
-                                modifier = Modifier.fillMaxWidth(),
-                                shapes = ButtonDefaults.shapes()
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.edit_rounded),
-                                    contentDescription = null
-                                )
-                                Spacer(Modifier.width(ICON_TEXT_SPACING.dp))
-                                Text(
-                                    text = stringResource(R.string.edit),
-                                    maxLines = 1
-                                )
-                            }
-                            Button(
-                                onClick = { lyricFilePicker.launch(arrayOf("*/*")) },
-                                modifier = Modifier.fillMaxWidth(),
-                                shapes = ButtonDefaults.shapes()
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.resource_import),
-                                    contentDescription = null
-                                )
-                                Spacer(Modifier.width(ICON_TEXT_SPACING.dp))
-                                Text(
-                                    text = stringResource(R.string.load),
-                                    maxLines = 1
-                                )
-                            }
-                        }
-                    }
-                } else {
-                    itemsIndexed(
-                        items = state.lyrics,
-                        key = { _, lyric -> lyric.id }
-                    ) { index, lyric ->
-
-                        val isCurrentLyric = index == currentLyricIndex
-
-                        val color by animateColorAsState(
-                            targetValue = if (isCurrentLyric || lyric.timestamp == 0) {
-                                MaterialTheme.colorScheme.primary
-                            } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant
-                            }
-                        )
-
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(5.dp)
-                                .clip(RoundedCornerShape(24.dp))
-                                .combinedClickable(
-                                    onClick = {
-                                        onHandlePlayerActions(
-                                            PlayerActions.SeekToSlider(
-                                                lyric.timestamp.toLong()
-                                            )
-                                        )
-                                    },
-                                    onLongClick = {
-                                        scope.launch {
-                                            clipboardManager.setClipEntry(
-                                                ClipEntry(
-                                                    ClipData.newPlainText(
-                                                        "Lyrics",
-                                                        lyric.lineLyrics
-                                                    )
-                                                )
-                                            )
-                                        }
-                                    }
-                                )
-                        ) {
-                            Text(
-                                text = lyric.lineLyrics,
-                                style = MaterialTheme.typography.titleLargeEmphasized.copy(
-                                    color = color,
-                                    fontSize = lyricsFontSize.sp,
-                                    textAlign = lyricsAlignment.toLyricsAlignment()
-                                ),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(15.dp)
-                                    .graphicsLayer {
-                                        alpha = if (isCurrentLyric) 1f else 0.3f
-                                    },
-                            )
-                        }
-                    }
-                }
+                AnimatedIconButton(
+                    onClick = { onHandlePlayerActions(PlayerActions.SeekToPreviousMusic) },
+                    icon = R.drawable.skip_previous,
+                    contentDescription = stringResource(androidx.media3.session.R.string.media3_controls_seek_back_description)
+                )
+                PlayPauseButton(
+                    isPlaying = musicState.isPlaying,
+                    onHandlePlayerActions = onHandlePlayerActions
+                )
+                AnimatedIconButton(
+                    onClick = { onHandlePlayerActions(PlayerActions.SeekToNextMusic) },
+                    icon = R.drawable.skip_next,
+                    contentDescription = stringResource(androidx.media3.session.R.string.media3_controls_seek_to_next_description)
+                )
             }
         }
+    ) { paddingValues ->
+        LyricsList(
+            contentPadding = paddingValues,
+            musicState = musicState,
+            onHandlePlayerActions = onHandlePlayerActions,
+            emptyLyrics = {
+                DefaultEmptyLyricsScreen(
+                    musicState = musicState,
+                    onNavigate = onNavigate,
+                    onHandlePlayerActions = onHandlePlayerActions
+                )
+            }
+        )
     }
 
 }

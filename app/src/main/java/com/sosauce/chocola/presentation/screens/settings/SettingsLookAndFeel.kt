@@ -95,8 +95,7 @@ fun SettingsLookAndFeel() {
             text = {
                 Text(
                     text = "Tt",
-                    fontFamily = nunitoFontFamily,
-                    fontWeight = FontWeight.Bold
+                    fontFamily = nunitoFontFamily
                 )
             },
         ),
@@ -106,8 +105,7 @@ fun SettingsLookAndFeel() {
             borderColor = if (useSystemFont) MaterialTheme.colorScheme.primary else Color.Transparent,
             text = {
                 Text(
-                    text = "Tt",
-                    fontWeight = FontWeight.Bold
+                    text = "Tt"
                 )
             }
         )

@@ -17,6 +17,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -399,7 +400,7 @@ private fun TrackDropdownMenu(
             }
         }
         Spacer(Modifier.height(MenuDefaults.GroupSpacing))
-        ButtonGroup(
+        Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally),
         ) {

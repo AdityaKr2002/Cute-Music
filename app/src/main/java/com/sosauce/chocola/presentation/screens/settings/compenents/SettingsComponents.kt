@@ -61,6 +61,7 @@ import com.materialkolor.dynamiccolor.ColorSpec
 import com.materialkolor.rememberDynamicMaterialThemeState
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberAppTheme
+import com.sosauce.chocola.data.models.EqualizerPreset
 import com.sosauce.chocola.presentation.screens.playing.components.WavySlider
 import com.sosauce.chocola.presentation.screens.settings.FontItem
 import com.sosauce.chocola.presentation.screens.settings.FontStyle
@@ -435,6 +436,27 @@ fun PaletteSelector(
             }
             Text(paletteStyle)
         }
+    }
+}
+
+@Composable
+fun EqualizerPresetSelector(
+    emoji: String,
+    name: String,
+    onClick: () -> Unit
+) {
+    SelectorSurface(
+        onClick = onClick
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(10.dp)
+                .size(50.dp)
+                .clip(MaterialShapes.Cookie9Sided.toShape())
+                .background(MaterialTheme.colorScheme.surfaceContainerHighest),
+            contentAlignment = Alignment.Center
+        ) { Text(emoji) }
+        Text(name)
     }
 }
 

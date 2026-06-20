@@ -26,7 +26,9 @@ class AlbumsRepository(
         selection: String? = null,
         selectionArgs: Array<String>? = null
     ): List<Album> {
-        val albums = mutableListOf<Album>()
+        // prevent duplicate albums
+        val albums = hashMapOf<String, Album>()
+
 
         val projection = arrayOf(
             MediaStore.Audio.Albums._ID,
@@ -34,6 +36,8 @@ class AlbumsRepository(
             MediaStore.Audio.Albums.ARTIST,
             MediaStore.Audio.Albums.NUMBER_OF_SONGS
         )
+
+
         context.contentResolver.query(
             MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
             projection,
@@ -49,19 +53,20 @@ class AlbumsRepository(
             while (cursor.moveToNext()) {
 
                 val nbSongs = cursor.getInt(nbTracksColumn)
-
                 if (nbSongs <= 0) continue
 
-                val id = cursor.getLong(idColumn)
                 val album = cursor.getString(albumColumn)
+                if (albums.containsKey(album)) continue
+
+                val id = cursor.getLong(idColumn)
                 val artist = cursor.getString(artistColumn)
                 val albumInfo = Album(id, album, artist)
-                albums.add(albumInfo)
+                albums[album] = albumInfo
             }
 
         }
 
-        return albums.distinctBy { it.name }
+        return ArrayList(albums.values)
     }
 
 

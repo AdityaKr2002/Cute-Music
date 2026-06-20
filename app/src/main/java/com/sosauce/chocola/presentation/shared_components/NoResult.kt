@@ -44,8 +44,7 @@ fun NoResult() {
         Spacer(Modifier.height(10.dp))
         Text(
             text = stringResource(R.string.no_result_found),
-            style = MaterialTheme.typography.headlineMediumEmphasized,
-            fontWeight = FontWeight.Black
+            style = MaterialTheme.typography.headlineMediumEmphasized
         )
         Text(
             text = stringResource(R.string.better_luck_next_time),

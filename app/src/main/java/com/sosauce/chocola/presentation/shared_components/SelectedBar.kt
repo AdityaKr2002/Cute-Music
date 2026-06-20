@@ -153,65 +153,82 @@ fun TracksSelectedBar(
         multiSelectState = multiSelectState
     ) {
 
-
         ButtonGroup(
-            horizontalArrangement = Arrangement.spacedBy(2.dp)
+            horizontalArrangement = Arrangement.spacedBy(2.dp),
+            overflowIndicator = {}
         ) {
-            Button(
-                onClick = { showPlaylistDialog = true },
-                interactionSource = interactionSources[0],
-                shape = RoundedCornerShape(topStart = 50.dp, bottomStart = 50.dp, topEnd = 4.dp, bottomEnd = 4.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
-                ),
-                modifier = Modifier
-                    .animateWidth(interactionSources[0])
-                    .weight(1f)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.playlist_add),
-                    contentDescription = null
-                )
-            }
-            Button(
-                onClick = {
-                    onHandlePlayerActions(PlayerActions.AddToQueue(multiSelectState.selectedItems.toList()))
-                    multiSelectState.clearSelected()
+            customItem(
+                buttonGroupContent = {
+                    Button(
+                        onClick = { showPlaylistDialog = true },
+                        interactionSource = interactionSources[0],
+                        shape = RoundedCornerShape(topStart = 50.dp, bottomStart = 50.dp, topEnd = 4.dp, bottomEnd = 4.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                            contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
+                        ),
+                        modifier = Modifier
+                            .animateWidth(interactionSources[0])
+                            .weight(1f)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.playlist_add),
+                            contentDescription = null
+                        )
+                    }
                 },
-                interactionSource = interactionSources[1],
-                shape = RoundedCornerShape(4.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
-                ),
-                modifier = Modifier
-                    .animateWidth(interactionSources[1])
-                    .weight(1f)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.add_to_queue),
-                    contentDescription = null
-                )
-            }
-            Button(
-                onClick = { showDeletionDialog = true },
-                interactionSource = interactionSources[2],
-                shape = RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp, topEnd = 50.dp, bottomEnd = 50.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
-                ),
-                modifier = Modifier
-                    .animateWidth(interactionSources[2])
-                    .weight(1f)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.trash_rounded_filled),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.error
-                )
-            }
+                menuContent = {}
+            )
+
+            customItem(
+                buttonGroupContent = {
+                    Button(
+                        onClick = {
+                            onHandlePlayerActions(PlayerActions.AddToQueue(multiSelectState.selectedItems.toList()))
+                            multiSelectState.clearSelected()
+                        },
+                        interactionSource = interactionSources[1],
+                        shape = RoundedCornerShape(4.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                            contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
+                        ),
+                        modifier = Modifier
+                            .animateWidth(interactionSources[1])
+                            .weight(1f)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.add_to_queue),
+                            contentDescription = null
+                        )
+                    }
+                },
+                menuContent = {}
+            )
+
+            customItem(
+                buttonGroupContent = {
+                    Button(
+                        onClick = { showDeletionDialog = true },
+                        interactionSource = interactionSources[2],
+                        shape = RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp, topEnd = 50.dp, bottomEnd = 50.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                            contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
+                        ),
+                        modifier = Modifier
+                            .animateWidth(interactionSources[2])
+                            .weight(1f)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.trash_rounded_filled),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }
+                },
+                menuContent = {}
+            )
         }
     }
 }

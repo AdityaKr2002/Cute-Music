@@ -64,6 +64,7 @@ import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberEnableEqualizer
 import com.sosauce.chocola.data.datastore.rememberPauseOnMute
 import com.sosauce.chocola.data.datastore.rememberSeekButtonsDuration
+import com.sosauce.chocola.presentation.screens.settings.compenents.EqualizerPresetSelector
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsSwitch
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsWithTitle
 import com.sosauce.chocola.presentation.screens.settings.compenents.SliderSettingsCards
@@ -83,8 +84,6 @@ fun SettingsPlayback(
     var enableEqualizer by rememberEnableEqualizer()
 
     Column {
-
-
         SettingsWithTitle(
             title = R.string.playback
         ) {
@@ -145,45 +144,33 @@ fun SettingsPlayback(
                         LazyRowWithScrollButton(
                             items = state.eqPresets
                         ) { preset ->
-                            SquareSelector(
-                                onClick = { onHandlePlaybackSettingsActions(PlaybackSettingsActions.UsePreset(preset.band)) },
-                                isSelected = false,
-                                width = 100.dp,
-                                height = 100.dp
-                            ) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    val emoji =when {
-                                        preset.name.contains("Normal", true) -> "🎧"
-                                        preset.name.contains("Classic", true) || preset.name.contains("Classical", true) -> "🎹"
-                                        preset.name.contains("Dance", true) -> "🕺"
-                                        preset.name.contains("Flat", true) -> "📏"
-                                        preset.name.contains("Folk", true) -> "🪕"
-                                        preset.name.contains("Heavy Metal", true) || preset.name.contains("Metal", true) -> "🤘"
-                                        preset.name.contains("Hip Hop", true) -> "🪩"
-                                        preset.name.contains("Jazz", true) -> "🎷"
-                                        preset.name.contains("Pop", true) -> "🎤"
-                                        preset.name.contains("Rock", true) -> "🎸"
-                                        preset.name.contains("Acoustic", true) -> "🎻"
-                                        preset.name.contains("Bass", true) -> "🔊"
-                                        preset.name.contains("Loudness", true) || preset.name.contains("Boost", true) -> "📢"
-                                        preset.name.contains("Electronic", true) || preset.name.contains("Techno", true) -> "🎛️"
-                                        preset.name.contains("Latin", true) -> "💃"
-                                        preset.name.contains("Country", true) -> "🤠"
-                                        preset.name.contains("Piano", true) -> "🎼"
-                                        preset.name.contains("Vocal", true) -> "🗣️"
-                                        else -> "🎵"
-                                    }
-
-                                    Text(emoji)
-                                    Text(
-                                        text = preset.name,
-                                        style = MaterialTheme.typography.labelMediumEmphasized,
-                                        modifier = Modifier.basicMarquee()
-                                    )
-                                }
+                            val emoji = when {
+                                preset.name.contains("Normal", true) -> "🎧"
+                                preset.name.contains("Classic", true) || preset.name.contains("Classical", true) -> "🎹"
+                                preset.name.contains("Dance", true) -> "🕺"
+                                preset.name.contains("Flat", true) -> "📏"
+                                preset.name.contains("Folk", true) -> "🪕"
+                                preset.name.contains("Heavy Metal", true) || preset.name.contains("Metal", true) -> "🤘"
+                                preset.name.contains("Hip Hop", true) -> "🪩"
+                                preset.name.contains("Jazz", true) -> "🎷"
+                                preset.name.contains("Pop", true) -> "🎤"
+                                preset.name.contains("Rock", true) -> "🎸"
+                                preset.name.contains("Acoustic", true) -> "🎻"
+                                preset.name.contains("Bass", true) -> "🔊"
+                                preset.name.contains("Loudness", true) || preset.name.contains("Boost", true) -> "📢"
+                                preset.name.contains("Electronic", true) || preset.name.contains("Techno", true) -> "🎛️"
+                                preset.name.contains("Latin", true) -> "💃"
+                                preset.name.contains("Country", true) -> "🤠"
+                                preset.name.contains("Piano", true) -> "🎼"
+                                preset.name.contains("Vocal", true) -> "🗣️"
+                                else -> "🎵"
                             }
+
+                            EqualizerPresetSelector(
+                                emoji = emoji,
+                                name = preset.name,
+                                onClick = { onHandlePlaybackSettingsActions(PlaybackSettingsActions.UsePreset(preset.band)) }
+                            )
                         }
                     }
                     Card(

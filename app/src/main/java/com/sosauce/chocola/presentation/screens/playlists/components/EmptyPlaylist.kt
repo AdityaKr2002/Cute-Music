@@ -56,8 +56,7 @@ fun EmptyPlaylist(emoji: String) {
         Spacer(Modifier.height(10.dp))
         Text(
             text = stringResource(R.string.its_empty_here),
-            style = MaterialTheme.typography.headlineMediumEmphasized,
-            fontWeight = FontWeight.Black
+            style = MaterialTheme.typography.headlineMediumEmphasized
         )
         Text(
             text = stringResource(R.string.empty_playlist_desc),

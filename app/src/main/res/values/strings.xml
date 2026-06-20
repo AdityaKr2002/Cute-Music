@@ -220,6 +220,8 @@
     <string name="rescan_tracks">Rescan tracks</string>
     <string name="rescan_tracks_desc">This will force Android to rescan all files on the device</string>
     <string name="generic_error">An error occured!</string>
+    <string name="art_lyrics">Art lyrics</string>
+    <string name="art_lyrics_desc">Shows lyrics directly on the artwork instead of a separate page. Click the artwork to view lyrics.</string>
 
 
     <plurals name="tracks">
