@@ -73,7 +73,7 @@
     <string name="speed">Vitesse</string>
     <string name="pitch">Hauteur</string>
     <string name="rate">Taux</string>
-    <string name="snap">Vitesse et hauteur de linstantané</string>
+    <string name="snap">Vitesse et angle de la prise d\'impulsion</string>
     <string name="share">Partager</string>
     <string name="show_close_button">Afficher le bouton de fermeture</string>
     <string name="duration">Durée</string>
@@ -188,4 +188,65 @@
         <item quantity="one">%d album</item>
         <item quantity="other">%d albums</item>
     </plurals>
+    <string name="new_rate">Entrez un nouveau taux compris entre %1$.1f et %2$d</string>
+    <string name="rate_error">La valeur doit être comprise entre %1$.1f et %2$d.</string>
+    <string name="hide_from_tracklist">Masquer de la liste des titres</string>
+    <string name="hidden_tracks">Titres cachés</string>
+    <string name="show_album_name">Afficher le nom de l\'album</string>
+    <string name="alignment">Alignement</string>
+    <string name="font_size">Taille de la police</string>
+    <string name="select_all">Tout sélectionner</string>
+    <string name="unselect_all">Tout désélectionner</string>
+    <string name="palette">Palette</string>
+    <string name="no_hidden_tracks">Pas de titres cachés !</string>
+    <string name="playback">Lecture</string>
+    <string name="centered_title">Titre centré</string>
+    <string name="ongoing_sleep_timer">Votre minuterie de mise en veille est activée</string>
+    <string name="timer_will_end_in">Le compte à rebours actuel prendra fin dans :</string>
+    <string name="equalizer">Égaliseur</string>
+    <string name="enable_equalizer">Activer l\'égaliseur</string>
+    <string name="path">Chemin</string>
+    <string name="channels">Chaînes</string>
+    <string name="no">Non</string>
+    <string name="about_track">À propos du titre</string>
+    <string name="about_file">À propos du fichier</string>
+    <string name="name_and_emoji">Nom &amp; emoji</string>
+    <string name="load">Charger</string>
+    <string name="not_a_lyric_file">Ce n\'est pas un fichier de paroles !</string>
+    <string name="error_pasting">Erreur lors du collage du contenu du presse-papiers</string>
+    <string name="seek_buttons_duration">Durée des boutons de recherche</string>
+    <string name="no_saf_tracks">Pas de titres S.A.F !</string>
+    <string name="lyrics_settings_desc">Faites en sorte qu\'elles soient aussi belles que votre chant !</string>
+    <string name="add_lyrics">Ajouter les paroles</string>
+    <string name="type_lyrics_here">Écrivez les paroles ici</string>
+    <string name="no_lyrics_added_yet">Vous n\'avez pas encore ajouté de paroles !</string>
+    <string name="adjust_timestamp">Ajuster l\'horodatage</string>
+    <string name="click_to_add_lyrics">Cliquez ici pour ajouter les paroles</string>
+    <string name="lyrics_editor">Éditeur de paroles</string>
+    <string name="click_plus_to_start">Cliquez sur le bouton « + » pour commencer !</string>
+    <string name="rescan_tracks">Réanalyser les titres</string>
+    <string name="rescan_tracks_desc">Cela obligera Android à réanalyser tous les fichiers présents sur l\'appareil</string>
+    <string name="generic_error">Une erreur s\'est produite !</string>
+    <plurals name="delete_playlists">
+        <item quantity="one">Supprimer la playlist</item>
+        <item quantity="many">Supprimer des playlists</item>
+        <item quantity="other">Supprimer des playlists</item>
+    </plurals>
+    <plurals name="delete_tracks">
+        <item quantity="one">Supprimer le titre</item>
+        <item quantity="many">Supprimer les titres</item>
+        <item quantity="other">Supprimer les titres</item>
+    </plurals>
+    <plurals name="delete_playlists_u_sure">
+        <item quantity="one">Êtes-vous sûr de vouloir supprimer la playlist %d ? Cette action est irréversible !</item>
+        <item quantity="many">Êtes-vous sûr de vouloir supprimer %d playlists ? Cette action est irréversible !</item>
+        <item quantity="other">Êtes-vous sûr de vouloir supprimer %d playlists ? Cette action est irréversible !</item>
+    </plurals>
+    <plurals name="delete_tracks_u_sure">
+        <item quantity="one">Êtes-vous sûr de vouloir supprimer le titre %d ? Cette action est irréversible !</item>
+        <item quantity="many">Êtes-vous sûr de vouloir supprimer %d titres ? Cette action est irréversible !</item>
+        <item quantity="other">Êtes-vous sûr de vouloir supprimer %d titres ? Cette action est irréversible !</item>
+    </plurals>
+    <string name="art_lyrics">Paroles artistiques</string>
+    <string name="art_lyrics_desc">Affiche les paroles directement sur la pochette, plutôt que sur une page distincte. Cliquez sur la pochette pour afficher les paroles.</string>
 </resources>
