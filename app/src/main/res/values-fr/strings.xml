@@ -216,7 +216,7 @@
     <string name="error_pasting">Erreur lors du collage du contenu du presse-papiers</string>
     <string name="seek_buttons_duration">Durée des boutons de recherche</string>
     <string name="no_saf_tracks">Pas de titres S.A.F !</string>
-    <string name="lyrics_settings_desc">Faites en sorte qu\'elles soient aussi belles que votre chant !</string>
+    <string name="lyrics_settings_desc">Faites en sorte qu\'elles soient aussi belles que votre chant !</string>
     <string name="add_lyrics">Ajouter les paroles</string>
     <string name="type_lyrics_here">Écrivez les paroles ici</string>
     <string name="no_lyrics_added_yet">Vous n\'avez pas encore ajouté de paroles !</string>
@@ -238,14 +238,14 @@
         <item quantity="other">Supprimer les titres</item>
     </plurals>
     <plurals name="delete_playlists_u_sure">
-        <item quantity="one">Êtes-vous sûr de vouloir supprimer la playlist %d ? Cette action est irréversible !</item>
-        <item quantity="many">Êtes-vous sûr de vouloir supprimer %d playlists ? Cette action est irréversible !</item>
-        <item quantity="other">Êtes-vous sûr de vouloir supprimer %d playlists ? Cette action est irréversible !</item>
+        <item quantity="one">Êtes-vous sûr de vouloir supprimer la playlist %d ? Cette action est irréversible !</item>
+        <item quantity="many">Êtes-vous sûr de vouloir supprimer %d playlists ? Cette action est irréversible !</item>
+        <item quantity="other">Êtes-vous sûr de vouloir supprimer %d playlists ? Cette action est irréversible !</item>
     </plurals>
     <plurals name="delete_tracks_u_sure">
-        <item quantity="one">Êtes-vous sûr de vouloir supprimer le titre %d ? Cette action est irréversible !</item>
-        <item quantity="many">Êtes-vous sûr de vouloir supprimer %d titres ? Cette action est irréversible !</item>
-        <item quantity="other">Êtes-vous sûr de vouloir supprimer %d titres ? Cette action est irréversible !</item>
+        <item quantity="one">Êtes-vous sûr de vouloir supprimer le titre %d ? Cette action est irréversible !</item>
+        <item quantity="many">Êtes-vous sûr de vouloir supprimer %d titres ? Cette action est irréversible !</item>
+        <item quantity="other">Êtes-vous sûr de vouloir supprimer %d titres ? Cette action est irréversible !</item>
     </plurals>
     <string name="art_lyrics">Paroles artistiques</string>
     <string name="art_lyrics_desc">Affiche les paroles directement sur la pochette, plutôt que sur une page distincte. Cliquez sur la pochette pour afficher les paroles.</string>
