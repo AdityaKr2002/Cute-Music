@@ -31,7 +31,7 @@
     <string name="request_permission">Accorder l\’autorisation</string>
     <string name="next_step">Étape suivante</string>
     <string name="no_music_title">Aucun titre trouvé</string>
-    <string name="no_music_desc">Alors pourquoi avez-vous installé l\’application ?</string>
+    <string name="no_music_desc">Alors pourquoi avez-vous installé lapplication ?</string>
     <string name="no_music_tip">Conseil : N\’oubliez pas d\’ajouter à la liste blanche les dossiers que vous souhaitez analyser dans les paramètres !</string>
     <string name="error_deleting_song">Une erreur s\’est produite lors de la suppression du titre.</string>
     <string name="deleting_song_OK">Titre supprimé avec succès</string>
