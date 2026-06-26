@@ -83,7 +83,7 @@
     <string name="manage_shown_tabs">Manage shown tabs</string>
     <string name="set_sleep_timer">Set sleep timer</string>
     <string name="go_to">Go to: %s</string>
-    <string name="no_lyrics_note">No lyrics found !</string>
+    <string name="no_lyrics_note">No lyrics found!</string>
     <string name="open_eq">Equalizer</string>
     <string name="from_saf">This track comes from the S.A.F</string>
     <string name="open_saf">Open S.A.F to add tracks</string>
@@ -92,7 +92,7 @@
     <string name="whitelisted">Whitelisted</string>
     <string name="saf_manager">S.A.F manager</string>
     <string name="saf">S.A.F</string>
-    <string name="no_playlists">No playlist found !</string>
+    <string name="no_playlists">No playlist found!</string>
     <string name="alrdy_in_playlist">Track already in playlist!</string>
     <string name="del_playlist">Delete playlist</string>
     <string name="modify">Modify</string>
@@ -127,11 +127,11 @@
     <string name="emoji">Emoji</string>
     <string name="remove_emoji">Remove emoji</string>
     <string name="look_and_feel">Look and feel</string>
-    <string name="look_and_feel_desc">The music is yours, why not the style too ?</string>
+    <string name="look_and_feel_desc">The music is yours, why not the style too?</string>
     <string name="now_playing">Now playing</string>
-    <string name="now_playing_desc">Make it your style !</string>
+    <string name="now_playing_desc">Make it your style!</string>
     <string name="library">Library</string>
-    <string name="library_desc">Manage all your tracks, like a DJ !</string>
+    <string name="library_desc">Manage all your tracks, like a DJ!</string>
     <string name="more_desc">Other settings that didn\'t deserve their own page.</string>
     <string name="add_queue">Add to queue</string>
     <string name="import_lrc">Import .lrc file</string>
@@ -145,12 +145,12 @@
     <string name="album">Album</string>
     <string name="artist">Artist</string>
     <string name="shuffle">Shuffle</string>
-    <string name="no_result_found">No result found !</string>
-    <string name="better_luck_next_time">Better luck next time !</string>
+    <string name="no_result_found">No result found!</string>
+    <string name="better_luck_next_time">Better luck next time!</string>
     <string name="no_playlist_desc">You\'d be cool if you created one</string>
     <string name="no_album_desc">You rock singles and that\'s okay</string>
     <string name="no_artist_desc">I\'m sure you sing better anyways</string>
-    <string name="are_u_sure">Are you sure ?</string>
+    <string name="are_u_sure">Are you sure?</string>
     <string name="lyrics">Lyrics</string>
     <string name="playback_controls">Playback controls</string>
     <string name="playback_controls_desc">For true music nerds!</string>
@@ -210,7 +210,7 @@
     <string name="load">Load</string>
     <string name="not_a_lyric_file">Not a lyric file!</string>
     <string name="error_pasting">Error pasting clipboard</string>
-    <string name="lyrics_settings_desc">Make them as beautiful as your singing !</string>
+    <string name="lyrics_settings_desc">Make them as beautiful as your singing!</string>
     <string name="add_lyrics">Add lyrics</string>
     <string name="type_lyrics_here">Type lyrics here</string>
     <string name="no_lyrics_added_yet">You haven\'t added lyrics yet!</string>
@@ -240,11 +240,11 @@
         <item quantity="other">Delete tracks</item>
     </plurals>
     <plurals name="delete_playlists_u_sure">
-        <item quantity="one">Are you sure you want to delete %d playlist ? This can\'t be undone!</item>
-        <item quantity="other">Are you sure you want to delete %d playlists ? This can\'t be undone!</item>
+        <item quantity="one">Are you sure you want to delete %d playlist? This can\'t be undone!</item>
+        <item quantity="other">Are you sure you want to delete %d playlists? This can\'t be undone!</item>
     </plurals>
     <plurals name="delete_tracks_u_sure">
-        <item quantity="one">Are you sure you want to delete %d track ? This can\'t be undone!</item>
-        <item quantity="other">Are you sure you want to delete %d tracks ? This can\'t be undone!</item>
+        <item quantity="one">Are you sure you want to delete %d track? This can\'t be undone!</item>
+        <item quantity="other">Are you sure you want to delete %d tracks? This can\'t be undone!</item>
     </plurals>
 </resources>
