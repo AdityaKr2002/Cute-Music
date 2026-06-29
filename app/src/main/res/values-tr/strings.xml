@@ -40,7 +40,7 @@
     <string name="yes">Evet</string>
     <string name="blacklisted_folders">Kara listeye alınan klasörler</string>
     <string name="delete_folder">Klasörü sil</string>
-    <string name="folder_delete_u_sure">Bu klasörü silmek istediğinizden emin misiniz?</string>
+    <string name="folder_delete_u_sure">Bu klasörü silmek istediğinden emin misin?</string>
     <string name="alrdy_blacklisted">Klasör zaten kara listede!</string>
     <string name="pls_restart">Değişikliklerin etkili olması için lütfen uygulamayı yeniden başlatın!</string>
     <string name="use_sys_font">Sistem yazı tipini kullan</string>
@@ -74,7 +74,7 @@
     <string name="manage_shown_tabs">Gösterilen sekmeleri yönet</string>
     <string name="set_sleep_timer">Uyku zamanlayıcısını ayarla</string>
     <string name="go_to">Git: %s</string>
-    <string name="no_lyrics_note">Sözler bulunamadı!</string>
+    <string name="no_lyrics_note">Şarkı sözleri bulunamadı!</string>
     <string name="open_eq">Ekolayzer</string>
     <string name="from_saf">Bu parça S.A.F\'den geliyor</string>
     <string name="open_saf">Parça eklemek için S.A.F\'yi aç</string>
@@ -82,7 +82,7 @@
     <string name="not_blacklisted">Kara listeye alınmamış</string>
     <string name="saf_manager">S.A.F yöneticisi</string>
     <string name="search_here">ara</string>
-    <string name="no_playlists">Hiç çalma listeniz yok! Bir tane oluşturarak dinleme deneyiminizi eğlenceli hale getirin!</string>
+    <string name="no_playlists">Hiç çalma listeniz yok!</string>
     <string name="alrdy_in_playlist">Parça zaten çalma listesinde!</string>
     <string name="del_playlist">Çalma listesini sil</string>
     <string name="modify">Düzenle</string>
@@ -125,9 +125,9 @@
     <string name="look_and_feel">Görünüş ve hissiyat</string>
     <string name="look_and_feel_desc">Müzik sizin, neden tarz da sizin olmasın ki?</string>
     <string name="now_playing">Şu an çalan</string>
-    <string name="now_playing_desc">Kendi tarzınızı yapın !</string>
+    <string name="now_playing_desc">Kendi tarzını yap!</string>
     <string name="library">Kütüphane</string>
-    <string name="library_desc">Bütün parçalarınızı yönetin, aynı bir DJ gibi !</string>
+    <string name="library_desc">Bütün parçalarını yönet, aynı bir DJ gibi!</string>
     <string name="more_desc">Kendi sayfalarını hak etmemiş olan diğer ayarlar.</string>
     <string name="add_queue">Sıraya ekle</string>
     <string name="import_lrc">.lrc dosyasını içe aktar</string>
@@ -139,11 +139,11 @@
     <string name="album">Albüm</string>
     <string name="artist">Sanatçı</string>
     <string name="shuffle">Karışık çalma</string>
-    <string name="no_result_found">Sonuç bulunamadı !</string>
-    <string name="better_luck_next_time">Bir dahaki sefere iyi şanslar !</string>
+    <string name="no_result_found">Sonuç bulunamadı!</string>
+    <string name="better_luck_next_time">Bir daha ki sefere bol şans!</string>
     <string name="no_playlist_desc">Bir tane oluştursan havalı olurdun</string>
-    <string name="no_music_desc">O zaman uygulamayı niye kurdun ki ?</string>
-    <string name="are_u_sure">Emin misin ?</string>
+    <string name="no_music_desc">O zaman uygulamayı niye kurdun ki?</string>
+    <string name="are_u_sure">Emin misin?</string>
     <string name="lyrics">Sözler</string>
     <string name="audio">Ses</string>
     <string name="pause_on_mute">Susturulduğunda durdur</string>
@@ -166,7 +166,7 @@
     <string name="already_in_playlist">Parça çoktan çalma listesinde var</string>
     <string name="art_as_bg">Kapağı arkaplan yap</string>
     <string name="playback_controls">Oynatma kontrolleri</string>
-    <string name="playback_controls_desc">Gerçek müzik sevdalıları için !</string>
+    <string name="playback_controls_desc">Gerçek müzik sevdalıları için!</string>
     <string name="permission_granted">Yetki verildi, devam edebilirsin…</string>
     <string name="next_step">Sonraki adım</string>
     <string name="no_music_tip">İpucu: Ayarlarda taramak istediğiniz klasörleri beyaz listeye eklemeyi unutmayın!</string>
@@ -216,7 +216,7 @@
     <string name="load">Manuel ekle</string>
     <string name="not_a_lyric_file">Geçerli bir \"lyrics\" dosyası değil!</string>
     <string name="error_pasting">Panodan yapıştırılırken hata oluştu</string>
-    <string name="lyrics_settings_desc">Şarkı söylemen gibi güzelleştir !</string>
+    <string name="lyrics_settings_desc">Şarkı söylemen gibi güzelleştir!</string>
     <string name="add_lyrics">Şarkı sözü ekle</string>
     <string name="type_lyrics_here">Şarkı sözlerini yaz</string>
     <string name="no_lyrics_added_yet">Henüz herhangi bir şarkı sözü eklemedin!</string>
@@ -236,11 +236,13 @@
         <item quantity="other">Parçaları sil</item>
     </plurals>
     <plurals name="delete_playlists_u_sure">
-        <item quantity="one">%d çalma listesini silmek istediğine emin misin? Bu işlemi geri alamazsın!</item>
-        <item quantity="other">%d çalma listelerini silmek istediğine emin misin? Bu işlemi geri alamazsın!</item>
+        <item quantity="one">%d tane çalma listesini silmek istediğine emin misin? Bu işlem geri alınamaz!</item>
+        <item quantity="other">%d tane çalma listesini silmek istediğine emin misin? Bu işlem geri alınamaz!</item>
     </plurals>
     <plurals name="delete_tracks_u_sure">
-        <item quantity="one">%d parçasını silmek istediğine emin misin? Bu işlemi geri alamazsın!</item>
-        <item quantity="other">%d parçalarını silmek istediğine emin misin? Bu işlemi geri alamazsın!</item>
+        <item quantity="one">%d parçayı silmek istediğine emin misin? Bu işlem geri alınamaz!</item>
+        <item quantity="other">%d tane parçayı silmek istediğine emin misin? Bu işlem geri alınamaz!</item>
     </plurals>
+    <string name="art_lyrics">Resimdeki şarkı sözleri</string>
+    <string name="art_lyrics_desc">Şarkı sözlerini başka bir sayfada göstermektense direkt şarkı resminde gösterir. Şarkı resmine basarak şarkı sözlerini görebilirsin.</string>
 </resources>
