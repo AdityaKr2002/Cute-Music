@@ -190,4 +190,63 @@
     <string name="min_track_length_text">Мин длительность песни</string>
     <string name="click_to_add">Нажмите, чтобы добавить</string>
     <string name="playlist_tag_add">Добавить новый тег</string>
+    <string name="playlist_tag_exists">Тег уже существует для этого плейлиста.</string>
+    <string name="playlist_tag_no_edit">Вы не сможете внести изменения в теги после их создания, но вы можете удалить их.</string>
+    <string name="new_rate">Введите новый показатель между %1$.1f и %2$d</string>
+    <string name="rate_error">Показатель должен быть между %1$.1f и %2$d.</string>
+    <string name="hide_from_tracklist">Скрыть из списка</string>
+    <string name="hidden_tracks">Скрытые песни</string>
+    <string name="show_album_name">Показывать название альбома</string>
+    <string name="alignment">Выравнивание</string>
+    <string name="font_size">Размер шрифта</string>
+    <string name="equalizer">Эквалайзер</string>
+    <string name="enable_equalizer">Включить эквалайзер</string>
+    <string name="channels">Каналы</string>
+    <string name="name_and_emoji">Название и эмодзи</string>
+    <string name="load">Загрузить</string>
+    <string name="not_a_lyric_file">Не файл текста песни!</string>
+    <string name="error_pasting">Ошибка вставки с буфера обмена</string>
+    <string name="lyrics_settings_desc">Сделай их также красивыми, как твое пение!</string>
+    <string name="add_lyrics">Добавить текст песни</string>
+    <string name="type_lyrics_here">Введите подходящий текст песни</string>
+    <string name="no_lyrics_added_yet">Вы ещё не добавили текст песни!</string>
+    <string name="adjust_timestamp">Установите временную метку</string>
+    <string name="click_to_add_lyrics">Нажмите, чтобы добавить текст песни</string>
+    <string name="lyrics_editor">Редактор текста песни</string>
+    <string name="click_plus_to_start">Нажмите на плюс, чтобы начать!</string>
+    <string name="rescan_tracks">Пересканировать песни</string>
+    <string name="rescan_tracks_desc">Это вынудит Android повторно отсканировать все файлы в девайсе</string>
+    <string name="generic_error">Произошла ошибка!</string>
+    <string name="art_lyrics">Караоке на обложке</string>
+    <string name="art_lyrics_desc">Оформляет текст песни прямо на обложке вместо отдельной страницы. Нажмите на обложку, чтобы показать текст.</string>
+    <plurals name="delete_playlists">
+        <item quantity="one">Удалить плейлист</item>
+        <item quantity="few">Удалить плейлисты</item>
+        <item quantity="many">Удалить плейлисты</item>
+        <item quantity="other">Удалить плейлисты</item>
+    </plurals>
+    <plurals name="delete_tracks">
+        <item quantity="one">Удалить песню</item>
+        <item quantity="few">Удалить песни</item>
+        <item quantity="many">Удалить песни</item>
+        <item quantity="other">Удалить песни</item>
+    </plurals>
+    <plurals name="delete_playlists_u_sure">
+        <item quantity="one">Вы уверены, что хотите удалить %d плейлист? Это действие невозвратимо!</item>
+        <item quantity="few">Вы точно уверены, что хотите удалить %d плейлиста? Это действие невозвратимо!</item>
+        <item quantity="many">Вы точно уверены, что хотите удалить %d плейлистов? Это действие невозвратимо!</item>
+        <item quantity="other">Вы точно уверены, что хотите удалить %d плейлистов? Это действие невозвратимо!</item>
+    </plurals>
+    <plurals name="delete_tracks_u_sure">
+        <item quantity="one">Вы уверены, что хотите удалить %d песню? Это действие невозвратимо!</item>
+        <item quantity="few">Вы точно уверены, что хотите удалить %d песни? Это действие невозвратимо!</item>
+        <item quantity="many">Вы точно уверены, что хотите удалить %d песен? Это действие невозвратимо!</item>
+        <item quantity="other">Вы точно уверены, что хотите удалить %d песен? Это действие невозвратимо!</item>
+    </plurals>
+    <string name="unselect_all">Отменить выбор всех</string>
+    <string name="select_all">Выбрать все</string>
+    <string name="no_hidden_tracks">Нет скрытых песен!</string>
+    <string name="ongoing_sleep_timer">У вас уже идёт таймер сна</string>
+    <string name="timer_will_end_in">Текущий таймер закончится через:</string>
+    <string name="path">Путь</string>
 </resources>
