@@ -171,7 +171,7 @@ fun SharedTransitionScope.PlaylistsScreen(
                                         DropdownMenuItem(
                                             selected = playlistSort == i,
                                             onClick = { playlistSort = i },
-                                            shapes = MenuDefaults.itemShapes(),
+                                            shapes = MenuDefaults.itemShape(i, 4),
                                             colors = MenuDefaults.selectableItemColors(),
                                             text = { Text(stringResource(text)) },
                                             trailingIcon = {

@@ -15,6 +15,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,11 +39,14 @@ import com.sosauce.chocola.data.datastore.rememberMinTrackDuration
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
+import com.sosauce.chocola.domain.actions.PlaylistActions
 import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.presentation.screens.settings.compenents.ClickableSettingsCard
 import com.sosauce.chocola.presentation.screens.settings.compenents.FoldersView
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsWithTitle
 import com.sosauce.chocola.presentation.screens.settings.compenents.SliderSettingsCards
+import com.sosauce.chocola.presentation.shared_components.DefaultMusicListItemTrailingContent
+import com.sosauce.chocola.presentation.shared_components.MoreOptions
 import com.sosauce.chocola.presentation.shared_components.MusicListItem
 import com.sosauce.chocola.utils.copyMutate
 import com.sosauce.chocola.utils.selfAlignHorizontally
@@ -133,9 +138,18 @@ fun SettingsLibrary(
                         MusicListItem(
                             track = track,
                             musicState = musicState,
-                            onShortClick = { onUnhideTrack(track.mediaId) },
-                            onNavigate = onNavigate,
-                            onHandlePlayerActions = onHandlePlayerActions
+                            onShortClick = {},
+                            trailingContent = {
+                                IconButton(
+                                    onClick = { onUnhideTrack(track.mediaId) },
+                                    shapes = IconButtonDefaults.shapes()
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.unhide),
+                                        contentDescription = null
+                                    )
+                                }
+                            }
                         )
                     }
                 } else {
@@ -206,8 +220,22 @@ fun SettingsLibrary(
                                     )
                                 )
                             },
-                            onNavigate = onNavigate,
-                            onHandlePlayerActions = onHandlePlayerActions
+                            trailingContent = {
+                                IconButton(
+                                    onClick = { safTracks = safTracks.copyMutate { remove(safTrack.uri.toString()) } },
+                                    shapes = IconButtonDefaults.shapes()
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.close),
+                                        contentDescription = null
+                                    )
+                                }
+                                DefaultMusicListItemTrailingContent(
+                                    track = safTrack,
+                                    onNavigate = onNavigate,
+                                    onHandlePlayerActions = onHandlePlayerActions
+                                )
+                            }
                         )
                     }
                 } else {

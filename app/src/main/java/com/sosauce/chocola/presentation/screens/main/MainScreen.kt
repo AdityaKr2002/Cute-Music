@@ -51,6 +51,7 @@ import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.presentation.screens.main.components.FolderHeader
 import com.sosauce.chocola.presentation.shared_components.CuteSearchbar
+import com.sosauce.chocola.presentation.shared_components.DefaultMusicListItemTrailingContent
 import com.sosauce.chocola.presentation.shared_components.MusicListItem
 import com.sosauce.chocola.presentation.shared_components.NoResult
 import com.sosauce.chocola.presentation.shared_components.NoXFound
@@ -117,7 +118,7 @@ fun SharedTransitionScope.MainScreen(
                                         DropdownMenuItem(
                                             selected = groupByFolders,
                                             onClick = { groupByFolders = !groupByFolders },
-                                            shapes = MenuDefaults.itemShapes(),
+                                            shapes = MenuDefaults.itemShape(0,2),
                                             colors = MenuDefaults.selectableItemColors(),
                                             text = { Text(stringResource(R.string.group_tracks)) },
                                             trailingIcon = {
@@ -144,7 +145,7 @@ fun SharedTransitionScope.MainScreen(
                                         DropdownMenuItem(
                                             selected = trackSort == i,
                                             onClick = { trackSort = i },
-                                            shapes = MenuDefaults.itemShapes(),
+                                            shapes = MenuDefaults.itemShape(i, 5),
                                             colors = MenuDefaults.selectableItemColors(),
                                             text = { Text(stringResource(text)) },
                                             trailingIcon = {
@@ -257,9 +258,14 @@ fun SharedTransitionScope.MainScreen(
                                             onLongClick = { multiSelectState.toggle(track) },
                                             track = track,
                                             musicState = musicState,
-                                            onNavigate = onNavigate,
                                             isSelected = isSelected,
-                                            onHandlePlayerActions = onHandlePlayerAction
+                                            trailingContent = {
+                                                DefaultMusicListItemTrailingContent(
+                                                    track = track,
+                                                    onNavigate = onNavigate,
+                                                    onHandlePlayerActions = onHandlePlayerAction
+                                                )
+                                            }
                                         )
                                     }
                                 }
@@ -297,9 +303,14 @@ fun SharedTransitionScope.MainScreen(
                                     onLongClick = { multiSelectState.toggle(track) },
                                     track = track,
                                     musicState = musicState,
-                                    onNavigate = onNavigate,
                                     isSelected = isSelected,
-                                    onHandlePlayerActions = onHandlePlayerAction
+                                    trailingContent = {
+                                        DefaultMusicListItemTrailingContent(
+                                            track = track,
+                                            onNavigate = onNavigate,
+                                            onHandlePlayerActions = onHandlePlayerAction
+                                        )
+                                    }
                                 )
                             }
                         }

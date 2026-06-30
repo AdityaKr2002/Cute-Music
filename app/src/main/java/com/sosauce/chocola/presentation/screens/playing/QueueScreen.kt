@@ -17,11 +17,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastMap
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
@@ -31,6 +34,7 @@ import com.sosauce.chocola.utils.selfAlignHorizontally
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 @Composable
 fun QueueScreen(
@@ -67,21 +71,23 @@ fun QueueScreen(
         ) {
             items(
                 items = musicState.loadedMedias,
-                key = { it.mediaId }
+                key = { it.mediaItem}
             ) { track ->
                 ReorderableItem(
                     state = reorderableLazyListState,
-                    key = track.mediaId
+                    key = track.uri
                 ) { isDragging ->
                     val scale by animateFloatAsState(
                         targetValue = if (isDragging) 1.01f else 1f
                     )
                     MusicListItem(
-                        modifier = Modifier.scale(scale),
+                        modifier = Modifier
+                            .graphicsLayer {
+                                scaleX = scale
+                                scaleY = scale
+                            },
                         track = track,
                         musicState = musicState,
-                        onNavigate = {},
-                        onHandlePlayerActions = onHandlePlayerAction,
                         onShortClick = {
                             onHandlePlayerAction(
                                 PlayerActions.Play(

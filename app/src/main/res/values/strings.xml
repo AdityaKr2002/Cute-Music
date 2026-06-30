@@ -220,9 +220,22 @@
     <string name="click_plus_to_start">Click the plus button to get started!</string>
     <string name="rescan_tracks">Rescan tracks</string>
     <string name="rescan_tracks_desc">This will force Android to rescan all files on the device</string>
-    <string name="generic_error">An error occured!</string>
+    <string name="generic_error">An error occurred!</string>
     <string name="art_lyrics">Art lyrics</string>
     <string name="art_lyrics_desc">Shows lyrics directly on the artwork instead of a separate page. Click the artwork to view lyrics.</string>
+    <string name="play_next">Play next</string>
+    <string name="default_launch_screen">Default launch screen</string>
+    <string name="main">Main</string>
+    <string name="start">Start</string>
+    <string name="center">Center</string>
+    <string name="end">End</string>
+    <string name="text_alignment">Text alignment</string>
+    <string name="music_and_audio_perm"><![CDATA[Music & audio permission]]></string>
+    <string name="audio_perm_desc">This permission is required in order to access your tracks.</string>
+    <string name="navigation">Navigation</string>
+    <string name="navigation_desc">You won\'t need a map for this !</string>
+
+
     <plurals name="tracks">
         <item quantity="one">%d track</item>
         <item quantity="other">%d tracks</item>

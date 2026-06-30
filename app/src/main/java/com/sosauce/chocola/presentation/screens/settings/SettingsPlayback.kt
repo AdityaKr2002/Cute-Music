@@ -193,80 +193,13 @@ fun SettingsPlayback(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             state.eqBands.fastForEach { (centerFrequency, milliBel) ->
-
-                                val animatedMb by animateFloatAsState(milliBel / 100f, bouncySpec())
-                                val sliderState = rememberSliderState(
-                                    value = animatedMb,
-                                    valueRange = -15f..15f
+                                EqualizerBandSlider(
+                                    centerFrequency = centerFrequency,
+                                    milliBel = milliBel,
+                                    onBandGainChanged = { freq, gain ->
+                                        onHandlePlaybackSettingsActions(PlaybackSettingsActions.SetBandGain(freq, gain))
+                                    }
                                 )
-                                sliderState.onValueChangeFinished = {
-                                    onHandlePlaybackSettingsActions(
-                                        PlaybackSettingsActions.SetBandGain(
-                                            centerFrequency,
-                                            (sliderState.value * 100).toInt().toShort()
-                                        )
-                                    )
-                                }
-                                LaunchedEffect(animatedMb) { sliderState.value = animatedMb }
-
-                                Column(
-                                    modifier = Modifier.padding(horizontal = 5.dp),
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    val label = if (centerFrequency >= 1000) "${centerFrequency / 1000}kHz" else "${centerFrequency}Hz"
-
-                                    Text(
-                                        text = label,
-                                        style = MaterialTheme.typography.labelMediumEmphasized
-                                    )
-                                    VerticalSlider(
-                                        modifier = Modifier.height(300.dp),
-                                        reverseDirection = true,
-                                        state = sliderState,
-                                        thumb = { state ->
-
-                                            val rotation by animateFloatAsState(
-                                                targetValue = state.value * 360,
-                                                animationSpec = bouncySpec()
-                                            )
-                                            Box(
-                                                modifier = Modifier
-                                                    .size(34.dp)
-                                                    .background(
-                                                        color = MaterialTheme.colorScheme.primary,
-                                                        shape = MaterialShapes.Circle.toShape()
-                                                    )
-                                                    .graphicsLayer {
-                                                        rotationZ = rotation
-                                                    },
-                                                contentAlignment = Alignment.Center
-                                            ) {
-
-                                                Box(
-                                                    modifier = Modifier
-                                                        .size(30.dp)
-                                                        .background(
-                                                            color = MaterialTheme.colorScheme.onPrimary,
-                                                            shape = MaterialShapes.Cookie12Sided.toShape()
-                                                        )
-                                                )
-                                            }
-                                        },
-                                        track = { state ->
-                                            SliderDefaults.Track(
-                                                modifier = Modifier.width(34.dp),
-                                                sliderState = state,
-                                                drawStopIndicator = null,
-                                                thumbTrackGapSize = 0.dp,
-                                                trackInsideCornerSize = 0.dp
-                                            )
-                                        }
-                                    )
-                                    Text(
-                                        text = "${sliderState.value.toInt()}db",
-                                        style = MaterialTheme.typography.labelMediumEmphasized
-                                    )
-                                }
                             }
                         }
                     }
@@ -274,5 +207,82 @@ fun SettingsPlayback(
             }
         }
     }
+}
 
+@Composable
+private fun EqualizerBandSlider(
+    centerFrequency: Int,
+    milliBel: Short,
+    onBandGainChanged: (Int, Short) -> Unit
+) {
+    val targetValue = remember(milliBel) { milliBel / 100f }
+
+    val sliderState = rememberSliderState(
+        value = targetValue,
+        valueRange = -15f..15f
+    )
+
+    sliderState.onValueChangeFinished = {
+        val finalMilliBel = (sliderState.value * 100).toInt().toShort()
+        onBandGainChanged(centerFrequency, finalMilliBel)
+    }
+
+    Column(
+        modifier = Modifier.padding(horizontal = 5.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        val label = if (centerFrequency >= 1000) "${centerFrequency / 1000}kHz" else "${centerFrequency}Hz"
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMediumEmphasized
+        )
+
+        VerticalSlider(
+            modifier = Modifier.height(300.dp),
+            reverseDirection = true,
+            state = sliderState,
+            thumb = { state ->
+                val rotation by animateFloatAsState(
+                    targetValue = state.value * 360,
+                    animationSpec = bouncySpec()
+                )
+
+                Box(
+                    modifier = Modifier
+                        .size(34.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = MaterialShapes.Circle.toShape()
+                        )
+                        .graphicsLayer {
+                            rotationZ = rotation
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+
+                    Box(
+                        modifier = Modifier
+                            .size(30.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                shape = MaterialShapes.Cookie12Sided.toShape()
+                            )
+                    )
+                }
+            },
+            track = { state ->
+                SliderDefaults.Track(
+                    modifier = Modifier.width(34.dp),
+                    sliderState = state,
+                    drawStopIndicator = null,
+                    thumbTrackGapSize = 0.dp,
+                    trackInsideCornerSize = 0.dp
+                )
+            }
+        )
+        Text(
+            text = "${sliderState.value.toInt()}dB",
+            style = MaterialTheme.typography.labelMediumEmphasized
+        )
+    }
 }

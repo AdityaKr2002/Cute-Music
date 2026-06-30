@@ -98,7 +98,7 @@ fun SharedTransitionScope.ArtistsScreen(
                                 DropdownMenuItem(
                                     selected = artistSort == i,
                                     onClick = { artistSort = i },
-                                    shapes = MenuDefaults.itemShapes(),
+                                    shapes = MenuDefaults.itemShape(i, 3),
                                     colors = MenuDefaults.selectableItemColors(),
                                     text = { Text(stringResource(text)) },
                                     trailingIcon = {

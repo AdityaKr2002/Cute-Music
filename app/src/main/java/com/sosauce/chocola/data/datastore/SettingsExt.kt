@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalCoroutinesApi::class)
+
 package com.sosauce.chocola.data.datastore
 
 import android.content.res.Configuration
@@ -11,7 +13,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 
 @Composable
@@ -23,7 +27,7 @@ fun <T> rememberPreference(
     val context = LocalContext.current
     val state by remember {
         context.dataStore.data
-            .map { it[key] ?: defaultValue }
+            .mapLatest { it[key] ?: defaultValue }
     }.collectAsStateWithLifecycle(defaultValue)
 
 

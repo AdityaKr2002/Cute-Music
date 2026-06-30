@@ -563,7 +563,7 @@ fun SquareSelector(
 }
 
 @Composable
-private fun SelectorSurface(
+fun SelectorSurface(
     onClick: () -> Unit,
     content: @Composable (ColumnScope.() -> Unit)
 ) {

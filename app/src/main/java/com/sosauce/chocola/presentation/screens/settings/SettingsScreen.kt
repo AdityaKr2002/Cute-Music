@@ -69,6 +69,12 @@ fun SettingsScreen(
             onNavigate = { backStack.add(SettingsScreens.NowPlaying) }
         ),
         Item(
+            icon = R.drawable.navigation,
+            name = stringResource(R.string.navigation),
+            description = stringResource(R.string.navigation_desc),
+            onNavigate = { backStack.add(SettingsScreens.Navigation) }
+        ),
+        Item(
             icon = R.drawable.lyrics_rounded,
             name = stringResource(R.string.lyrics),
             description = stringResource(R.string.lyrics_settings_desc),
@@ -168,6 +174,10 @@ fun SettingsScreen(
 
                 entry<SettingsScreens.LookAndFeel> {
                     SettingsLookAndFeel()
+                }
+
+                entry<SettingsScreens.Navigation> {
+                    SettingsNavigation()
                 }
 
                 entry<SettingsScreens.NowPlaying> {

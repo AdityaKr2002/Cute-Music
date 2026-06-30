@@ -4,7 +4,7 @@ import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class SettingsScreens() : NavKey {
+sealed class SettingsScreens : NavKey {
 
     @Serializable
     data object Settings : SettingsScreens()
@@ -23,4 +23,7 @@ sealed class SettingsScreens() : NavKey {
 
     @Serializable
     data object Lyrics : SettingsScreens()
+
+    @Serializable
+    data object Navigation : SettingsScreens()
 }

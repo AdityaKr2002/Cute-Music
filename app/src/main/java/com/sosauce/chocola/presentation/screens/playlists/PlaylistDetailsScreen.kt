@@ -42,6 +42,7 @@ import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberAppTheme
 import com.sosauce.chocola.data.datastore.rememberIsLandscape
 import com.sosauce.chocola.data.datastore.rememberPaletteStyle
+import com.sosauce.chocola.data.datastore.rememberSortTracksAscending
 import com.sosauce.chocola.data.datastore.rememberTrackSort
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.data.states.MusicState
@@ -52,6 +53,7 @@ import com.sosauce.chocola.presentation.screens.album.components.NumberOfTracks
 import com.sosauce.chocola.presentation.screens.playlists.components.EmptyPlaylist
 import com.sosauce.chocola.presentation.screens.playlists.components.PlaylistHeader
 import com.sosauce.chocola.presentation.shared_components.CuteSearchbar
+import com.sosauce.chocola.presentation.shared_components.DefaultMusicListItemTrailingContent
 import com.sosauce.chocola.presentation.shared_components.MoreOptions
 import com.sosauce.chocola.presentation.shared_components.MusicListItem
 import com.sosauce.chocola.presentation.shared_components.SortingDropdownMenu
@@ -74,13 +76,11 @@ fun SharedTransitionScope.PlaylistDetailsScreen(
     onNavigateUp: () -> Unit
 ) {
 
-    val context = LocalContext.current
     val listState = rememberLazyListState()
-    val isLandscape = rememberIsLandscape()
     val theme by rememberAppTheme()
     val isSystemInDarkTheme = isSystemInDarkTheme()
     val paletteStyle by rememberPaletteStyle()
-    var sortTracksAsc by rememberSaveable { mutableStateOf(true) }
+    var sortTracksAsc by rememberSortTracksAscending()
     var trackSort by rememberTrackSort()
     val multiSelectState = rememberSweetSelectState<CuteTrack>()
 
@@ -182,7 +182,7 @@ fun SharedTransitionScope.PlaylistDetailsScreen(
                                             DropdownMenuItem(
                                                 selected = trackSort == i,
                                                 onClick = { trackSort = i },
-                                                shapes = MenuDefaults.itemShapes(),
+                                                shapes = MenuDefaults.itemShape(i, 6),
                                                 colors = MenuDefaults.selectableItemColors(),
                                                 text = { Text(stringResource(text)) },
                                                 trailingIcon = {
@@ -203,10 +203,10 @@ fun SharedTransitionScope.PlaylistDetailsScreen(
                         items(
                             items = state.tracks,
                             key = { it.mediaId }
-                        ) { music ->
+                        ) { track ->
 
                             val isSelected by remember {
-                                derivedStateOf { multiSelectState.isSelected(music) }
+                                derivedStateOf { multiSelectState.isSelected(track) }
                             }
 
                             MusicListItem(
@@ -214,41 +214,46 @@ fun SharedTransitionScope.PlaylistDetailsScreen(
                                     .animateItem(),
                                 onShortClick = {
                                     if (multiSelectState.isInSelectionMode) {
-                                        multiSelectState.toggle(music)
+                                        multiSelectState.toggle(track)
                                     } else {
                                         onHandlePlayerAction(
                                             PlayerActions.Play(
-                                                index = state.tracks.indexOf(music),
+                                                index = state.tracks.indexOf(track),
                                                 tracks = state.tracks
                                             )
                                         )
                                     }
                                 },
                                 isSelected = isSelected,
-                                onLongClick = { multiSelectState.toggle(music) },
-                                track = music,
+                                onLongClick = { multiSelectState.toggle(track) },
+                                track = track,
                                 musicState = musicState,
-                                onNavigate = { onNavigate(it) },
-                                onHandlePlayerActions = onHandlePlayerAction,
-                                extraOptions = listOf(
-                                    MoreOptions(
-                                        text = { stringResource(R.string.remove_from_playlist) },
-                                        icon = R.drawable.playlist_remove,
-                                        onClick = {
-                                            onHandlePlaylistAction(
-                                                PlaylistActions.UpsertPlaylist(
-                                                    state.playlist.copy(
-                                                        musics = state.playlist.musics.copyMutate {
-                                                            remove(
-                                                                music.mediaId
+                                trailingContent = {
+                                    DefaultMusicListItemTrailingContent(
+                                        track = track,
+                                        onNavigate = onNavigate,
+                                        onHandlePlayerActions = onHandlePlayerAction,
+                                        extraOptions = listOf(
+                                            MoreOptions(
+                                                text = { stringResource(R.string.remove_from_playlist) },
+                                                icon = R.drawable.playlist_remove,
+                                                onClick = {
+                                                    onHandlePlaylistAction(
+                                                        PlaylistActions.UpsertPlaylist(
+                                                            state.playlist.copy(
+                                                                musics = state.playlist.musics.copyMutate {
+                                                                    remove(
+                                                                        track.mediaId
+                                                                    )
+                                                                }
                                                             )
-                                                        }
+                                                        )
                                                     )
-                                                )
+                                                }
                                             )
-                                        }
+                                        )
                                     )
-                                )
+                                }
                             )
                         }
                     }

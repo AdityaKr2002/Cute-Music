@@ -48,6 +48,10 @@ sealed interface PlayerActions {
         val cuteTracks: List<CuteTrack>
     ) : PlayerActions
 
+    data class PlayNext(
+        val cuteTrack: CuteTrack
+    ) : PlayerActions
+
     data class LoadLyrics(
         val uri: Uri
     ) : PlayerActions

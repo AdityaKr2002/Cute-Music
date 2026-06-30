@@ -16,6 +16,7 @@ interface PlaylistDao {
     @Delete
     suspend fun deletePlaylist(playlists: List<Playlist>)
 
+
     @Query("SELECT * FROM playlist ORDER BY name ASC")
     fun getPlaylists(): Flow<List<Playlist>>
 

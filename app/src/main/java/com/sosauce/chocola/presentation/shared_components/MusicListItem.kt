@@ -65,6 +65,7 @@ import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.presentation.screens.playlists.components.PlaylistPicker
+import com.sosauce.chocola.presentation.shared_components.animations.AnimatedSelectedIcon
 import com.sosauce.chocola.presentation.shared_components.dialogs.DeletionDialog
 import com.sosauce.chocola.presentation.shared_components.dialogs.MusicDetailsDialog
 import com.sosauce.chocola.utils.LocalScreen
@@ -80,18 +81,8 @@ fun MusicListItem(
     musicState: MusicState,
     onShortClick: (mediaId: String) -> Unit,
     onLongClick: (() -> Unit)? = null,
-    onNavigate: (Screen) -> Unit,
-    onHandlePlayerActions: (PlayerActions) -> Unit,
     isSelected: Boolean = false,
-    extraOptions: List<MoreOptions> = emptyList(),
-    trailingContent: @Composable () -> Unit = {
-        DefaultMusicListItemTrailingContent(
-            track = track,
-            onNavigate = onNavigate,
-            onHandlePlayerActions = onHandlePlayerActions,
-            extraOptions = extraOptions
-        )
-    }
+    trailingContent: @Composable () -> Unit
 ) {
 
     val isCurrentlyPlaying = musicState.track.uri.toString() == track.uri.toString() && musicState.isPlayerReady
@@ -100,8 +91,7 @@ fun MusicListItem(
             MaterialTheme.colorScheme.primaryContainer.copy(0.1f)
         } else {
             Color.Transparent
-        },
-        animationSpec = bouncySpec()
+        }
     )
     val scale by animateFloatAsState(
         targetValue = if (isSelected) 0.95f else 1f
@@ -164,31 +154,25 @@ fun MusicListItem(
         onClick = { onShortClick(track.mediaId) },
         onLongClick = onLongClick,
         leadingContent = {
-            AnimatedContent(
-                targetState = isSelected,
-                transitionSpec = { scaleIn() togetherWith scaleOut() },
-                modifier = Modifier.padding(start = 10.dp)
+            AnimatedSelectedIcon(
+                isSelected = isSelected
             ) {
-                if (it) {
-                    SelectedItemLogo()
-                } else {
-                    Box(
-                        modifier = Modifier
-                            .size(50.dp)
-                            .clip(SquircleShape(smoothing = CornerSmoothing.Full))
-                            .background(MaterialTheme.colorScheme.surfaceContainer),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.music_note_rounded),
-                            contentDescription = null
-                        )
-                        AsyncImage(
-                            model = track.artUri,
-                            contentDescription = stringResource(R.string.artwork),
-                            contentScale = ContentScale.Crop
-                        )
-                    }
+                Box(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clip(SquircleShape(smoothing = CornerSmoothing.Full))
+                        .background(MaterialTheme.colorScheme.surfaceContainer),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.music_note_rounded),
+                        contentDescription = null
+                    )
+                    AsyncImage(
+                        model = track.artUri,
+                        contentDescription = stringResource(R.string.artwork),
+                        contentScale = ContentScale.Crop
+                    )
                 }
             }
         },
@@ -212,7 +196,7 @@ fun MusicListItem(
 }
 
 @Composable
-private fun DefaultMusicListItemTrailingContent(
+fun DefaultMusicListItemTrailingContent(
     track: CuteTrack,
     onNavigate: (Screen) -> Unit,
     onHandlePlayerActions: (PlayerActions) -> Unit,
@@ -279,16 +263,13 @@ private fun TrackDropdownMenu(
     var showDetailsDialog by remember { mutableStateOf(false) }
     var showDeletionDialog by remember { mutableStateOf(false) }
     var showPlaylistDialog by remember { mutableStateOf(false) }
-    var safTracks by rememberAllSafTracks()
     var hiddenTracks by rememberHiddenTracks()
     val trackOptions = listOf(
         MoreOptions(
             text = { stringResource(R.string.edit) },
-            onClick = {
-                onDismissRequest()
-                onNavigate(Screen.MetadataEditor(track.path, track.uri.toString()))
-            },
-            icon = R.drawable.edit_rounded
+            onClick = { onNavigate(Screen.MetadataEditor(track.path, track.uri.toString())) },
+            icon = R.drawable.edit_rounded,
+            enabled = !track.isSaf
         ),
 //        MoreOptions(
 //            text = { "Transform" },
@@ -304,6 +285,11 @@ private fun TrackDropdownMenu(
             icon = R.drawable.add_to_queue
         ),
         MoreOptions(
+            text = { stringResource(R.string.play_next) },
+            onClick = { onHandlePlayerActions(PlayerActions.PlayNext(track)) },
+            icon = R.drawable.fast_forward
+        ),
+        MoreOptions(
             text = { stringResource(R.string.hide_from_tracklist) },
             onClick = { hiddenTracks = hiddenTracks.copyMutate { add(track.mediaId) } },
             icon = R.drawable.hide
@@ -311,7 +297,6 @@ private fun TrackDropdownMenu(
         MoreOptions(
             text = { stringResource(R.string.go_to, track.album) },
             onClick = {
-                onDismissRequest()
                 onNavigate(
                     Screen.AlbumsDetails(track.album)
                 )
@@ -321,7 +306,6 @@ private fun TrackDropdownMenu(
         MoreOptions(
             text = { stringResource(R.string.go_to, track.artist) },
             onClick = {
-                onDismissRequest()
                 onNavigate(
                     Screen.ArtistsDetails(track.artist)
                 )
@@ -334,15 +318,6 @@ private fun TrackDropdownMenu(
             icon = R.drawable.playlist_add
         )
     ) + extraOptions
-    val onDeleteClick = remember {
-        {
-            if (track.isSaf) {
-                safTracks = safTracks.copyMutate { remove(track.uri.toString()) }
-            } else {
-                showDeletionDialog = true
-            }
-        }
-    }
 
 
     if (showDetailsDialog) {
@@ -376,20 +351,17 @@ private fun TrackDropdownMenu(
         ) {
             trackOptions.fastForEachIndexed { index, option ->
                 DropdownMenuItem(
-                    onClick = option.onClick,
+                    onClick = {
+                        onDismissRequest()
+                        option.onClick()
+                    },
                     enabled = option.enabled,
                     shape = when (index) {
                         0 -> MenuDefaults.leadingItemShape
                         trackOptions.lastIndex -> MenuDefaults.trailingItemShape
                         else -> MenuDefaults.middleItemShape
                     },
-                    text = {
-                        if (option.enabled) {
-                            Text(option.text())
-                        } else {
-                            Text(option.disabledText!!())
-                        }
-                    },
+                    text = { Text(option.text()) },
                     leadingIcon = {
                         Icon(
                             painter = painterResource(option.icon),
@@ -445,7 +417,7 @@ private fun TrackDropdownMenu(
                 )
             }
             FilledIconButton(
-                onClick = onDeleteClick,
+                onClick = { showDeletionDialog = true },
                 modifier = Modifier
                     .weight(1f)
                     .size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide)),
@@ -471,6 +443,5 @@ data class MoreOptions(
     val onClick: () -> Unit,
     val icon: Int,
     val tint: Color? = null,
-    val enabled: Boolean = true,
-    val disabledText: (@Composable () -> String)? = null,
+    val enabled: Boolean = true
 )

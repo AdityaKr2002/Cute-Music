@@ -1,14 +1,33 @@
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
+
 package com.sosauce.chocola.presentation.screens.settings
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialShapes
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -18,9 +37,11 @@ import com.sosauce.chocola.data.datastore.rememberArtLyrics
 import com.sosauce.chocola.data.datastore.rememberLyricsAlignment
 import com.sosauce.chocola.data.datastore.rememberLyricsFontSize
 import com.sosauce.chocola.presentation.screens.settings.compenents.ClickableSettingsCard
+import com.sosauce.chocola.presentation.screens.settings.compenents.SelectorSurface
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsDropdownMenu
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsSwitch
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsWithTitle
+import com.sosauce.chocola.presentation.shared_components.LazyRowWithScrollButton
 import com.sosauce.chocola.utils.LyricsAlignment
 
 @Composable
@@ -36,38 +57,77 @@ fun SettingsLyrics() {
         LyricsAlignment.END
     )
 
+    val alignmentItems = listOf(
+        AlignmentItem(
+            onClick = { lyricsAlignment = LyricsAlignment.START },
+            isSelected = lyricsAlignment == LyricsAlignment.START,
+            icon = R.drawable.align_left,
+            text = R.string.start
+        ),
+        AlignmentItem(
+            onClick = { lyricsAlignment = LyricsAlignment.CENTERED },
+            isSelected = lyricsAlignment == LyricsAlignment.CENTERED,
+            icon = R.drawable.align_center,
+            text = R.string.center
+        ),
+        AlignmentItem(
+            onClick = { lyricsAlignment = LyricsAlignment.END },
+            isSelected = lyricsAlignment == LyricsAlignment.END,
+            icon = R.drawable.align_right,
+            text = R.string.end
+        )
+    )
+
     Column {
         SettingsWithTitle(
             title = R.string.lyrics
         ) {
-            SettingsDropdownMenu(
-                value = lyricsAlignment,
-                topDp = 24.dp,
-                bottomDp = 4.dp,
-                text = R.string.alignment
-            ) { onClose ->
-                lyricsAlignmentOptions.fastForEachIndexed { index, alignment ->
-                    val selected = alignment == lyricsAlignment
 
-                    val trailingIcon: @Composable (() -> Unit)? = if (selected) {
-                        {
-                            Icon(
-                                painter = painterResource(R.drawable.check),
-                                contentDescription = null
-                            )
+
+            Card(
+                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 2.dp),
+                shape = RoundedCornerShape(
+                    topStart = 24.dp,
+                    topEnd = 24.dp,
+                    bottomEnd = 4.dp,
+                    bottomStart = 4.dp
+                )
+            ) {
+                Column {
+                    LazyRowWithScrollButton(
+                        items = alignmentItems
+                    ) { alignment ->
+                        val borderColor by animateColorAsState(
+                            if (alignment.isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
+                        )
+
+                        SelectorSurface(
+                            onClick = alignment.onClick
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .padding(10.dp)
+                                    .size(50.dp)
+                                    .clip(MaterialShapes.Cookie9Sided.toShape())
+                                    .border(
+                                        width = 2.dp,
+                                        color = borderColor,
+                                        shape = MaterialShapes.Cookie9Sided.toShape()
+                                    )
+                                    .background(MaterialTheme.colorScheme.surfaceContainerHighest),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    painter = painterResource(alignment.icon),
+                                    contentDescription = null
+                                )
+                            }
+                            Text(stringResource(alignment.text))
                         }
-                    } else null
-
-                    DropdownMenuItem(
-                        selected = selected,
-                        onClick = {
-                            lyricsAlignment = alignment
-                            onClose()
-                        },
-                        shapes = MenuDefaults.itemShape(index, lyricsAlignmentOptions.size),
-                        text = { Text(alignment) },
-                        trailingIcon = trailingIcon
-                    )
+                    }
                 }
             }
             SettingsDropdownMenu(
@@ -80,23 +140,22 @@ fun SettingsLyrics() {
 
                     val selected = size == lyricsFontSize
 
-                    val trailingIcon: @Composable (() -> Unit)? = if (selected) {
-                        {
-                            Icon(
-                                painter = painterResource(R.drawable.check),
-                                contentDescription = null
-                            )
-                        }
-                    } else null
                     DropdownMenuItem(
                         selected = selected,
                         onClick = {
-                            lyricsFontSize = size
                             onClose()
+                            lyricsFontSize = size
                         },
                         shapes = MenuDefaults.itemShape(index, 20),
                         text = { Text(size.toString()) },
-                        trailingIcon = trailingIcon
+                        trailingIcon = {
+                            if (selected) {
+                                Icon(
+                                    painter = painterResource(R.drawable.check),
+                                    contentDescription = null
+                                )
+                            }
+                        }
                     )
                 }
             }
@@ -111,3 +170,10 @@ fun SettingsLyrics() {
         }
     }
 }
+
+data class AlignmentItem(
+    val onClick: () -> Unit,
+    val isSelected: Boolean,
+    val icon: Int,
+    val text: Int
+)

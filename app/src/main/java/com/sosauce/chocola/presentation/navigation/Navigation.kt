@@ -31,6 +31,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.sosauce.chocola.data.datastore.rememberInitialScreenBlocking
 import com.sosauce.chocola.presentation.screens.album.AlbumDetailsScreen
 import com.sosauce.chocola.presentation.screens.album.AlbumDetailsViewModel
 import com.sosauce.chocola.presentation.screens.album.AlbumsScreen
@@ -69,7 +70,8 @@ fun Nav(
 ) {
 
     val context = LocalContext.current
-    val startScreen = if (context.hasMusicPermission()) Screen.Main else Screen.Setup
+    val initialScreen = rememberInitialScreenBlocking()
+    val startScreen = if (context.hasMusicPermission()) initialScreen else Screen.Setup
     val backStack = rememberNavBackStack(startScreen)
     val currentScreen by remember {
         derivedStateOf { backStack.lastOrNull() ?: Screen.Main }

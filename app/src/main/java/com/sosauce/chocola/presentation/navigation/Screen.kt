@@ -4,7 +4,7 @@ import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class Screen() : NavKey {
+sealed class Screen : NavKey {
     @Serializable
     data object Main : Screen()
 
@@ -58,4 +58,15 @@ sealed class Screen() : NavKey {
     data class Transformer(
         val trackUri: String
     ) : Screen()
+
+    companion object {
+        fun toScreen(screen: String) : Screen {
+            return when(screen) {
+                Main.toString() -> Main
+                Albums.toString() -> Albums
+                Artists.toString() -> Artists
+                else -> Main
+            }
+        }
+    }
 }

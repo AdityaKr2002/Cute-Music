@@ -2,34 +2,52 @@
 
 package com.sosauce.chocola.presentation.screens.settings
 
+import android.graphics.drawable.Icon
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberAppTheme
+import com.sosauce.chocola.data.datastore.rememberInitialScreen
 import com.sosauce.chocola.data.datastore.rememberPaletteStyle
 import com.sosauce.chocola.data.datastore.rememberShowShuffleButton
 import com.sosauce.chocola.data.datastore.rememberUseArtTheme
 import com.sosauce.chocola.data.datastore.rememberUseSystemFont
+import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.presentation.screens.settings.compenents.FontSelector
 import com.sosauce.chocola.presentation.screens.settings.compenents.PaletteSelector
+import com.sosauce.chocola.presentation.screens.settings.compenents.SelectorSurface
+import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsDropdownMenu
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsSwitch
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsWithTitle
 import com.sosauce.chocola.presentation.screens.settings.compenents.ThemeSelector
@@ -42,12 +60,12 @@ import com.sosauce.chocola.utils.anyLightColorScheme
 
 @Composable
 fun SettingsLookAndFeel() {
-    val scrollState = rememberScrollState()
     var theme by rememberAppTheme()
     var useSystemFont by rememberUseSystemFont()
     var showShuffleButton by rememberShowShuffleButton()
     var useMaterialArt by rememberUseArtTheme()
     var paletteStyle by rememberPaletteStyle()
+
     val themeItems = listOf(
         ThemeItem(
             onClick = { theme = CuteTheme.SYSTEM },
@@ -148,7 +166,12 @@ fun SettingsLookAndFeel() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 2.dp),
-                shape = RoundedCornerShape(24.dp)
+                shape = RoundedCornerShape(
+                    topStart = 24.dp,
+                    topEnd = 24.dp,
+                    bottomStart = 4.dp,
+                    bottomEnd = 4.dp
+                )
             ) {
                 LazyRowWithScrollButton(
                     items = paletteItems
@@ -160,6 +183,13 @@ fun SettingsLookAndFeel() {
                     )
                 }
             }
+            SettingsSwitch(
+                checked = useMaterialArt,
+                onCheckedChange = { useMaterialArt = !useMaterialArt },
+                topDp = 4.dp,
+                bottomDp = 24.dp,
+                text = stringResource(R.string.use_art)
+            )
         }
         SettingsWithTitle(
             title = R.string.font
@@ -177,17 +207,6 @@ fun SettingsLookAndFeel() {
                     FontSelector(font)
                 }
             }
-        }
-        SettingsWithTitle(
-            title = R.string.ui
-        ) {
-            SettingsSwitch(
-                checked = useMaterialArt,
-                onCheckedChange = { useMaterialArt = !useMaterialArt },
-                topDp = 24.dp,
-                bottomDp = 24.dp,
-                text = stringResource(R.string.use_art)
-            )
         }
         SettingsWithTitle(
             title = R.string.cute_searchbar
@@ -216,6 +235,13 @@ data class FontItem(
     val fontStyle: FontStyle,
     val borderColor: Color,
     val text: @Composable () -> Unit
+)
+
+data class ScreenItem(
+    val onClick: () -> Unit,
+    val screen: String,
+    val icon: Int,
+    val text: Int
 )
 
 enum class FontStyle {

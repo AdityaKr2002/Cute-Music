@@ -68,6 +68,7 @@ import com.sosauce.chocola.presentation.screens.album.components.NumberOfTracks
 import com.sosauce.chocola.presentation.screens.artist.components.ArtistHeader
 import com.sosauce.chocola.presentation.screens.artist.components.NumberOfAlbums
 import com.sosauce.chocola.presentation.shared_components.CuteSearchbar
+import com.sosauce.chocola.presentation.shared_components.DefaultMusicListItemTrailingContent
 import com.sosauce.chocola.presentation.shared_components.MusicListItem
 import com.sosauce.chocola.presentation.shared_components.NoXFound
 import com.sosauce.chocola.presentation.shared_components.SortingDropdownMenu
@@ -264,7 +265,7 @@ fun SharedTransitionScope.ArtistDetailsScreen(
                                         DropdownMenuItem(
                                             selected = trackSort == i,
                                             onClick = { trackSort = i },
-                                            shapes = MenuDefaults.itemShapes(),
+                                            shapes = MenuDefaults.itemShape(i, 5),
                                             colors = MenuDefaults.selectableItemColors(),
                                             text = { Text(stringResource(text)) },
                                             trailingIcon = {
@@ -285,32 +286,37 @@ fun SharedTransitionScope.ArtistDetailsScreen(
                     items(
                         items = state.tracks,
                         key = { it.mediaId }
-                    ) { music ->
+                    ) { track ->
 
                         val isSelected by remember {
-                            derivedStateOf { multiSelectState.isSelected(music) }
+                            derivedStateOf { multiSelectState.isSelected(track) }
                         }
 
                         MusicListItem(
                             modifier = Modifier.animateItem(),
-                            track = music,
+                            track = track,
                             musicState = musicState,
                             onShortClick = {
                                 if (multiSelectState.isInSelectionMode) {
-                                    multiSelectState.toggle(music)
+                                    multiSelectState.toggle(track)
                                 } else {
                                     onHandlePlayerAction(
                                         PlayerActions.Play(
-                                            index = state.tracks.indexOf(music),
+                                            index = state.tracks.indexOf(track),
                                             tracks = state.tracks
                                         )
                                     )
                                 }
                             },
-                            onLongClick = { multiSelectState.toggle(music) },
-                            onNavigate = onNavigate,
+                            onLongClick = { multiSelectState.toggle(track) },
                             isSelected = isSelected,
-                            onHandlePlayerActions = onHandlePlayerAction
+                            trailingContent = {
+                                DefaultMusicListItemTrailingContent(
+                                    track = track,
+                                    onNavigate = onNavigate,
+                                    onHandlePlayerActions = onHandlePlayerAction
+                                )
+                            }
                         )
                     }
                 } else {

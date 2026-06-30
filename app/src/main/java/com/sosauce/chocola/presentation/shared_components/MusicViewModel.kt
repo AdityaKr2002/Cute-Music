@@ -458,6 +458,18 @@ class MusicViewModel(
                     )
                 }
             }
+
+            is PlayerActions.PlayNext -> {
+                _musicState.update {
+                    it.copy(
+                        loadedMedias = it.loadedMedias.copyMutate {
+                            add(it.mediaIndex + 1, action.cuteTrack)
+                        }
+                    )
+                }
+
+                mediaController?.addMediaItem(musicState.value.mediaIndex + 1, action.cuteTrack.mediaItem)
+            }
             is PlayerActions.LoadLyrics -> {
                 viewModelScope.launch {
                     val lyrics = lyricsParser.parseLyrics(action.uri.path ?: return@launch)

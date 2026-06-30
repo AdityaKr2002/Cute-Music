@@ -1,7 +1,11 @@
+@file:OptIn(ExperimentalCoroutinesApi::class)
+
 package com.sosauce.chocola.data.datastore
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -22,6 +26,7 @@ import com.sosauce.chocola.data.datastore.PreferencesKeys.HAS_BEEN_THROUGH_SETUP
 import com.sosauce.chocola.data.datastore.PreferencesKeys.HAS_SEEN_TIP
 import com.sosauce.chocola.data.datastore.PreferencesKeys.HIDDEN_FOLDERS
 import com.sosauce.chocola.data.datastore.PreferencesKeys.HIDDEN_TRACKS
+import com.sosauce.chocola.data.datastore.PreferencesKeys.INITIAL_SCREEN
 import com.sosauce.chocola.data.datastore.PreferencesKeys.LYRICS_ALIGNMENT
 import com.sosauce.chocola.data.datastore.PreferencesKeys.LYRICS_FONT_SIZE
 import com.sosauce.chocola.data.datastore.PreferencesKeys.MIN_TRACK_DURATION
@@ -45,12 +50,17 @@ import com.sosauce.chocola.data.datastore.PreferencesKeys.TRACK_STYLE
 import com.sosauce.chocola.data.datastore.PreferencesKeys.USE_ART_THEME
 import com.sosauce.chocola.data.datastore.PreferencesKeys.USE_SYSTEM_FONT
 import com.sosauce.chocola.data.datastore.PreferencesKeys.WHITELISTED_FOLDERS
+import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.utils.ArtworkShape
 import com.sosauce.chocola.utils.CutePaletteStyle
 import com.sosauce.chocola.utils.CuteTheme
 import com.sosauce.chocola.utils.LyricsAlignment
 import com.sosauce.chocola.utils.ThumbStyle
 import com.sosauce.chocola.utils.TrackStyle
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.runBlocking
 
 private const val PREFERENCES_NAME = "settings"
 
@@ -100,6 +110,8 @@ data object PreferencesKeys {
     val TRACK_STYLE = stringPreferencesKey("TRACK_STYLE")
     val EQUALIZER_PRESETS = stringPreferencesKey("EQUALIZER_PRESETS")
     val ART_LYRICS = booleanPreferencesKey("ART_LYRICS")
+    val INITIAL_SCREEN = stringPreferencesKey("INITIAL_SCREEN")
+
 }
 
 
@@ -247,6 +259,23 @@ fun rememberEnableEqualizer() =
 @Composable
 fun rememberArtLyrics() =
     rememberPreference(key = ART_LYRICS, defaultValue = false)
+
+
+@Composable
+fun rememberInitialScreen() =
+    rememberPreference(key = INITIAL_SCREEN, defaultValue = Screen.Main.toString())
+
+@Composable
+fun rememberInitialScreenBlocking(): Screen {
+    val context = LocalContext.current
+
+    val screen = runBlocking {
+        context.dataStore.data.mapLatest {
+            it[INITIAL_SCREEN] ?: Screen.Main.toString()
+        }.first()
+    }
+    return Screen.toScreen(screen)
+}
 //
 //suspend fun getPauseOnMute(context: Context) =
 //    getPreference(key = PAUSE_ON_MUTE, defaultValue = false, context = context)
