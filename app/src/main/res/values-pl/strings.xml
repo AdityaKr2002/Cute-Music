@@ -15,7 +15,7 @@
     <string name="previous_song">Poprzednia piosenka</string>
     <string name="play_pause_button">Przycisk Odtwórz/Pauza</string>
     <string name="next_button">Następna piosenka</string>
-    <string name="no_artists_found">Nie znaleziono artystów !</string>
+    <string name="no_artists_found">Nie znaleziono artystów!</string>
     <string name="artwork">Okładka</string>
     <string name="artists">Wykonawcy</string>
     <string name="albums">Albumy</string>
@@ -86,7 +86,7 @@
     <string name="whitelisted">Dodany do białej listy</string>
     <string name="saf_manager">Menedżer S.A.F</string>
     <string name="saf">S.A.F</string>
-    <string name="no_playlists">Nie znaleziono listy odtwarzania !</string>
+    <string name="no_playlists">Nie znaleziono listy odtwarzania!</string>
     <string name="alrdy_in_playlist">Utwór jest już na liście odtwarzania!</string>
     <string name="del_playlist">Usuń listę odtwarzania</string>
     <string name="modify">Modyfikuj</string>
@@ -113,14 +113,14 @@
     <string name="export_playlist">Eksportuj listę odtwarzania</string>
     <string name="edit_playlist">Edytuj listę odtwarzania</string>
     <string name="remove_from_playlist">Usuń z listy odtwarzania</string>
-    <string name="seek_prev_song">Przejdź do poprzedniego utworu</string>
+    <string name="seek_prev_song">Przejdź do poprzedniej piosenki</string>
     <string name="seek_next_song">Przejdź do następnego utworu</string>
     <string name="sort">Sortuj</string>
     <string name="stop_playback">Zatrzymaj odtwarzanie</string>
     <string name="screen_selection">Wybór ekranu</string>
     <string name="emoji">Emoji</string>
     <string name="remove_emoji">Usuń emoji</string>
-    <string name="look_and_feel">Wygląd i obsługa</string>
+    <string name="look_and_feel">Wygląd i styl</string>
     <string name="look_and_feel_desc">Muzyka jest Twoja, ale dlaczego nie miałbyś mieć też swojego stylu?</string>
     <string name="now_playing">Teraz odtwarzane</string>
     <string name="now_playing_desc">Stwórz swój własny styl!</string>
@@ -143,7 +143,7 @@
     <string name="no_playlist_desc">Byłoby super, gdybyś jakąś stworzył(a)</string>
     <string name="no_album_desc">Grasz single i to jest w porządku</string>
     <string name="no_artist_desc">Jestem pewien, że i tak lepiej śpiewasz</string>
-    <string name="are_u_sure">Jesteś pewny ?</string>
+    <string name="are_u_sure">Jesteś pewny?</string>
     <string name="lyrics">Teksty piosenek</string>
     <string name="playback_controls">Sterowanie odtwarzaniem</string>
     <string name="playback_controls_desc">Dla prawdziwych muzycznych maniaków!</string>
@@ -165,7 +165,7 @@
     <string name="min_track_length_hint">Możesz również zdecydować się na nieodpytywanie utworów krótszych niż określony czas trwania</string>
     <string name="min_track_length_text">Minimalny czas trwania utworu</string>
     <string name="min_track_duration_desc">Utwory krótsze od podanego czasu trwania nie zostaną pobrane.</string>
-    <string name="as_added">Jak dodano</string>
+    <string name="as_added">Dodano</string>
     <string name="unknown">Nieznane</string>
     <string name="tags">Tagi</string>
     <string name="color">Kolor</string>
@@ -253,4 +253,8 @@
         <item quantity="many">Czy na pewno chcesz usunąć %d utworów? Tego nie da się cofnąć!</item>
         <item quantity="other">Czy na pewno chcesz usunąć %d utworów? Tego nie da się cofnąć!</item>
     </plurals>
+    <string name="type_lyrics_here">Wpisz tutaj tekst</string>
+    <string name="art_lyrics">Tekst i okładka</string>
+    <string name="art_lyrics_desc">Wyświetla tekst bezpośrednio na grafice, a nie na osobnej stronie. Kliknij grafikę, aby wyświetlić tekst.</string>
+    <string name="rate">Ocena</string>
 </resources>
